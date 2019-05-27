@@ -1,3 +1,5 @@
 Trashes
 commun
 assets/
+node_modules/
+package-lock.json
