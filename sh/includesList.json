@@ -1,0 +1,25 @@
+{
+	"thirdparty" : [
+		"bliss.js",
+		"mousetrap.js",
+		"suncalc.js"
+	],
+
+	"classes" : [
+		"LocalStorage.js",
+		"GlobalVariables.js"
+	],
+
+	"includes" : [
+		"dom.js",
+		"html.js",
+		"javascript.js",
+		"numbers.js",
+		"object.js",
+		"strings.js"
+	],
+
+	"asis" : [
+		"classes/Dative.js"
+	]
+}

@@ -1,0 +1,165 @@
+#ClockSVG {
+	overflow: visible;
+
+	width: 90vmin;
+	height: 90vmin;
+	margin: auto;
+	position: absolute;
+}
+
+#DaylightHoursSVG {
+	overflow: visible;
+
+	width: 100vw;
+	height: 100vh;
+	margin: auto;
+	position: absolute;
+}
+
+#DaylightHours {
+
+	path {
+		transition: opacity 250ms;
+	}
+
+	#Day {
+		fill: url(#DaylightSky);
+	}
+
+	#Night {
+		fill: rgb(33, 33, 33);
+	}
+
+}
+
+#MoonlightHours {
+	transition: opacity 250ms;
+}
+
+#MoonlightArc {
+	stroke: rgba(255, 255, 255, 0.22);
+	stroke-width: 1px;
+	stroke-linecap: round;
+	fill: none;
+}
+
+#MoonlightBar {
+	stroke: rgba(255, 255, 255, 0.2);
+	stroke-width: 8px;
+	stroke-linecap: round;
+	fill: none;
+}
+
+text {
+	text-anchor: middle;
+	dominant-baseline: middle;
+}
+
+#Mask {
+	fill: transparentize(white, .85);
+}
+
+#Face {
+	user-select: none;
+	--foreground-color: black;
+	fill: none;
+	stroke: var(--foreground-color);
+
+	#Disc {
+		fill: white;
+		stroke: none;
+	}
+
+	#Pivot {
+		fill: var(--foreground-color);
+		stroke: none;
+	}
+
+	#HourHand {
+		fill: var(--foreground-color);
+		stroke: var(--foreground-color);
+		stroke-width: 3;
+		stroke-linecap: round;
+	}
+
+	.tick {
+		stroke: var(--foreground-color);
+		&.hour {
+			stroke-width: 3;
+		}
+	}
+
+	text {
+		font-family: Helvetica;
+		font-size: 16px;
+		dominant-baseline: central;
+
+		fill: var(--foreground-color);
+	}
+
+	#Sun {
+		stroke: none;
+		fill: url(#SunGradient);
+		filter: url(#SunBlur);
+	}
+
+	#SunBurst {
+		stroke: none;
+		fill: #fff;
+		filter: url(#SunBurstBlur);
+		fill-opacity: 1;
+	}
+
+	#Moon {
+		cursor: pointer;
+		clip-path: url(#ShadowClip);
+		&.daytime-moon {
+			opacity: .3;
+		}
+	}
+
+	#Date {
+		font-size: 13px;
+		font-weight: lighter;
+		text-transform: uppercase;
+	}
+}
+
+@keyframes loadingAnimation {
+	0% {
+		transform: rotate(0);
+	}
+	100% {
+		transform: rotate(35deg);
+	}
+}
+
+#Spinner {
+
+	#LoadingIndicator {
+		stroke: #b11313;
+		stroke-dasharray: 0,6.6;
+		stroke-width: 2px;
+		stroke-linecap: round;
+		fill: none;
+
+		animation: loadingAnimation 1.5s infinite;
+		opacity: 1;
+		transition: opacity 1s;
+	}
+
+	#LoadingIndicator.hide {
+		opacity: 0;
+	}
+}
+
+#DebugTime {
+	position: absolute;
+	bottom: 20px;
+	right: 20px;
+	text-align: right;
+	font-size: 20px;
+	font-weight: bold;
+	color: white;
+	text-shadow: 0 0 5px rgba(black, .5)
+}
