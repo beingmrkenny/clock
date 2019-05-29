@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	clock.start();
 
 	LocationService.execute(function () {
-		var clock = new Clock();
+		let clock = new Clock();
 		SkyEvents.drawDaylightHours();
 		SkyEvents.placeSun();
 		SkyEvents.placeMoon();
@@ -23,11 +23,15 @@ document.addEventListener('DOMContentLoaded', function () {
 	});
 
 	qid('Moon').addEventListener('click', function () {
-		var moonlightHours = qid('MoonlightHours'),
+		let moonlightHours = qid('MoonlightHours'),
 			clock = new Clock(),
 			toggle = !(moonlightHours.classList.contains('transparent'));
 		qid('MoonlightHours').classList.toggle('transparent', toggle);
 		clock.data.setItem('moonlightVisible', toggle);
 	});
+
+	if (!clock.now().isWeekend()) {
+		Events.drawWorkArc();
+	}
 
 });
