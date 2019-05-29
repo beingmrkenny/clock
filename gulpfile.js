@@ -116,6 +116,14 @@ function watchCommand (cb) {
 	});
 }
 
+function open (cb) {
+	const shell = require('gulp-shell');
+	return src('.', {read: false})
+		.pipe(shell(['open serve/index.html']));
+}
+
+exports.open = open;
+
 exports.css = css;
 exports.js = js;
 exports.html = html;
