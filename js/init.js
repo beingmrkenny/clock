@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	});
 
 	if (!clock.now().isWeekend()) {
-		Events.drawWorkArc();
+		Clock.drawArc('09.00', '17.30', 'Work');
 	}
 
 });

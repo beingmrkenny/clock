@@ -72,7 +72,7 @@ class Clock {
 
 		this.globalVariables.setItem(
 			'tickTimer',
-			setInterval(timer, 1000) // COMBAK 1000
+			setInterval(timer, 1000)
 		);
 
 		qid('HourHand').style.opacity = 1;
@@ -201,6 +201,28 @@ class Clock {
 		this.globalVariables.setItem('debug', true);
 		var moonStore = new LocalStorage('MOON');
 		moonStore.clear();
+	}
+
+	static drawArc (start, end, id) {
+
+		var clock = new Clock();
+
+		start = new Dative().setTimeComponent(new Dative(start).toString('H:i:s.u'));
+		end = new Dative().setTimeComponent(new Dative(end).toString('H:i:s.u'));
+
+		if (start > end) {
+			start = start.addDays(-1);
+		}
+
+		var radius = 1 * clock.radius,
+			largeArcFlag = ((end - start) > (86400000 / 2)) ? 1 : 0,
+			startPos = $number.polarToRect(radius, Time.asClockAngle(start)),
+			endPos   = $number.polarToRect(radius, Time.asClockAngle(end)),
+			path = `M ${startPos.x},${startPos.y} A ${radius},${radius} 0 ${largeArcFlag} 1 ${endPos.x},${endPos.y}`,
+			arc = $dom.createElement(`<path d="${path}" id="${id}Arc">`, 'svg');
+
+		clock.face.appendChild(arc);
+
 	}
 
 	static drawLoadingSpinner () {
