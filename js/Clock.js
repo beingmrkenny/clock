@@ -203,6 +203,20 @@ class Clock {
 		moonStore.clear();
 	}
 
+	static drawLocationSpecificDetails () {
+		let clock = new Clock();
+		SkyEvents.drawDaylightHours();
+		SkyEvents.placeSun();
+		SkyEvents.placeMoon();
+		SkyEvents.drawMoonlightArc();
+		SkyEvents.drawMoonlightBar();
+		SkyEvents.changeMoonPhase();
+		qid('MoonlightHours').classList.toggle(
+			'transparent',
+			!(clock.data.getItem('moonlightVisible'))
+		);
+	}
+
 	static drawArc (start, end, id) {
 
 		var clock = new Clock();

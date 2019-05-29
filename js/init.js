@@ -8,19 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	// clock.debug();
 	clock.start();
 
-	LocationService.execute(function () {
-		let clock = new Clock();
-		SkyEvents.drawDaylightHours();
-		SkyEvents.placeSun();
-		SkyEvents.placeMoon();
-		SkyEvents.drawMoonlightArc();
-		SkyEvents.drawMoonlightBar();
-		SkyEvents.changeMoonPhase();
-		qid('MoonlightHours').classList.toggle(
-			'transparent',
-			!(clock.data.getItem('moonlightVisible'))
-		);
-	});
+	LocationService.execute(Clock.drawLocationSpecificDetails);
 
 	qid('Moon').addEventListener('click', function () {
 		let moonlightHours = qid('MoonlightHours'),
@@ -33,5 +21,11 @@ document.addEventListener('DOMContentLoaded', function () {
 	if (!clock.now().isWeekend()) {
 		Clock.drawArc('09.00', '17.30', 'Work');
 	}
+
+	qid('Cog').addEventListener('click', function () {
+		var ls = new LocalStorage('CLOCK');
+		ls.delete('location');
+		LocationService.execute(Clock.drawLocationSpecificDetails);
+	});
 
 });
