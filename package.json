@@ -1,0 +1,31 @@
+{
+	"name": "clock",
+	"version": "1.0.0",
+	"description": "",
+	"main": "gulpfile.js",
+	"dependencies": {
+		"fs-extra": "",
+		"google-closure-compiler": "",
+		"gulp": "",
+		"gulp-rename": "",
+		"gulp-replace": "",
+		"gulp-sass": "",
+		"gulp-sourcemaps": "",
+		"node-notify": "",
+		"node-sass": ""
+	},
+	"devDependencies": {},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/beingmrkenny/clock.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/beingmrkenny/clock/issues"
+	},
+	"homepage": "https://github.com/beingmrkenny/clock#readme"
+}

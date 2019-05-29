@@ -132,7 +132,7 @@ function dump (which) {
 }
 
 function dumple () {
-	var storedData = JSON.parse(localStorage.getItem('MOON')).moonTimes,
+	var storedData = JSON.parse(window.localStorage.getItem('MOON')).moonTimes,
 		moonTimes = storedData.data;
 	if (moonTimes) {
 		let table = [];

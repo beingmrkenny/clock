@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Clock</title>
+		<link rel="stylesheet" href="./clock.css?refresh=refresh" media="screen" title="no title" charset="utf-8">
+		<link rel="shortcut icon" href="./favicon.png?refresh=refresh">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	</head>
+	<body>
+
+		<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="-250 -250 500 500" preserveAspectRatio="xMidYMid slice" id="DaylightHoursSVG">
+			<defs>
+				<radialGradient id="DaylightSky" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="2011.183" gradientTransform="matrix(0.155205, 0.000137, -0.000132, 0.151049, 0.847296, -13.102082)" >
+					<stop offset="0" style="stop-color: rgb(143, 236, 253);"/>
+					<stop offset="1" style="stop-color: rgb(3, 150, 219);"/>
+				</radialGradient>
+			</defs>
+			<g id="DaylightHours"></g>
+		</svg>
+
+		<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="-250 -250 500 500" preserveAspectRatio="xMidYMid meet" id="ClockSVG">
+
+			<defs>
+				<clipPath id="ShadowClip">
+					<path  id="Shadow" stroke="none" fill="rgba(0,0,0,.5)"></path>
+				</clipPath>
+				<radialGradient id="SunGradient" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="12.5">
+					<stop offset="0" style="stop-color: rgb(255, 255, 255)"/>
+					<stop offset="1" style="stop-color: rgb(246, 240, 175)"/>
+				</radialGradient>
+				<filter id="SunBlur">
+					<feGaussianBlur in="SourceGraphic" stdDeviation="1" />
+				</filter>
+				<filter id="SunBurstBlur">
+					<feGaussianBlur in="SourceGraphic" stdDeviation="4" />
+				</filter>
+			</defs>
+
+
+			<g id="Face">
+
+				<circle r="170" cx="0" cy="0" id="Disc" />
+				<circle r="3" cx="0" cy="0" id="Pivot" />
+
+				<text id="Date" x="72" y="0"></text>
+
+				<g id="Spinner"></g>
+
+				<g id="MoonlightHours" class="transparent"></g>
+
+				<path d="M 60 0 L 63.101 52.058 L 88.088 6.974 L 63.685 56.463 L 109.742 26.298 L 67.567 57.684 L 120 53.546 L 64.828 61.032 L 116.513 82.474 L 63.183 65.176 L 100.079 106.458 L 60.974 66.688 L 74.465 120 L 58.657 71.455 L 45.535 120 L 57.179 66.016 L 19.921 106.458 L 54.467 65.344 L 3.487 82.474 L 55.339 62.543 L 0 53.546 L 52.265 57.852 L 10.258 26.298 L 53.964 55.287 L 31.912 6.974 L 58.41 55.585 L 60 0 Z" id="SunBurst" />
+
+				<circle r="12.5" id="Sun" />
+				<image width="25" height="25" xlink:href="moon.png?refresh=refresh" id="Moon" />
+
+			</g>
+
+		</svg>
+
+		<script type="text/javascript" src="./Dative.js?refresh=refresh"></script>
+		<script type="text/javascript" src="./clock.js?refresh=refresh"></script>
+	</body>
+</html>

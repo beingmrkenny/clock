@@ -6,6 +6,7 @@ class Clock {
 
 	constructor () {
 		this.svg = qid('ClockSVG');
+		// NOTE: The compiler chokes on this and I don't want to define it all to hell in externs.js
 		this.radius = this.svg.viewBox.baseVal.width / 3;
 		this.face = qid('Face');
 		this.data = new LocalStorage('CLOCK');

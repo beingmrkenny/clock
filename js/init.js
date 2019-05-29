@@ -1,4 +1,4 @@
-$.ready().then(function () {
+document.addEventListener('DOMContentLoaded', function () {
 
 	var clock = new Clock();
 
