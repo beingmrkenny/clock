@@ -80,6 +80,11 @@ function html() {
 		.pipe(dest('serve/'));
 }
 
+function cleanup (cb) {
+	fs.removeSync('serve');
+	cb();
+}
+
 // FIXME: Duplication of local and readme for one parameter change is poo poo
 
 function local (cb) {
@@ -127,6 +132,6 @@ exports.open = open;
 exports.css = css;
 exports.js = js;
 exports.html = html;
-exports.release = release;
-exports.local = local;
+exports.release = series(cleanup, release);
+exports.local = series(cleanup, local);
 exports.watch = series(local, watchCommand);
