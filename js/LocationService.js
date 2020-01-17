@@ -1,7 +1,7 @@
 
 class LocationService {
 
-	static execute (action, suppressPermissionRequest) {
+	static execute (action, suppressPermissionRequest=false) {
 
 		if (LocationService.haveLocation()) {
 

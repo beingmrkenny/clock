@@ -29,7 +29,7 @@ class Clock {
 
 		var now = this.globalVariables.getItem('now');
 		if (now) {
-			this.setNow(now.addMilliseconds(1000));
+			this.setNow(now.addMilliseconds(msAdvance));
 		}
 
 		this.showCurrentTime();
@@ -40,7 +40,7 @@ class Clock {
 			now = new Dative(this.now()).toString('Y-m-d H:i:s');
 
 		if (this.globalVariables.getItem('debug')) {
-			qid('DebugTime').textContent = new Dative(this.now()).toString('j M, H:i:s');
+			qid('DebugTime').textContent = new Dative(this.now()).toString('j M, H:i:s P');
 		}
 
 		if (now == refreshSun) {
@@ -59,7 +59,7 @@ class Clock {
 
 	}
 
-	start (dateTime) {
+	start () {
 
 		var timer;
 
@@ -72,7 +72,7 @@ class Clock {
 
 		this.globalVariables.setItem(
 			'tickTimer',
-			setInterval(timer, 1000)
+			setInterval(timer, msInterval)
 		);
 
 		qid('HourHand').style.opacity = 1;
@@ -189,15 +189,6 @@ class Clock {
 		this.face.appendChild(hand);
 	}
 
-	debug () {
-		if (!qid('DebugTime')) {
-			document.body.appendChild($dom.createElement('<time id="DebugTime"></time>'));
-		}
-		this.globalVariables.setItem('debug', true);
-		var moonStore = new LocalStorage('MOON');
-		moonStore.clear();
-	}
-
 	static drawLocationSpecificDetails () {
 		let clock = new Clock();
 		SkyEvents.drawDaylightHours();
@@ -209,6 +200,11 @@ class Clock {
 		qid('MoonlightHours').classList.toggle(
 			'transparent',
 			!(clock.data.getItem('moonlightVisible'))
+		);
+		// DEBUG: debuggery
+		console.log(
+			'Clock.drawLocationSpecificDetails called ' +
+			new Dative().toString('Y-m-d H:i:s')
 		);
 	}
 
@@ -265,6 +261,15 @@ class Clock {
 		if (la) {
 			la.classList.add('hide');
 		}
+	}
+
+	debug () {
+		if (!qid('DebugTime')) {
+			document.body.appendChild($dom.createElement('<time id="DebugTime"></time>'));
+		}
+		this.globalVariables.setItem('debug', true);
+		var moonStore = new LocalStorage('MOON');
+		moonStore.clear();
 	}
 
 }

@@ -102,7 +102,7 @@ function dump (which) {
 		sunSorter.sort(function (a, b) { return a[1] - b[1]; });
 		sunTimes = {};
 		for (let sunArray of sunSorter) {
-			sunTimes[sunArray[0]] = sunArray[1].toString('D j F, H:i:s');
+			sunTimes[sunArray[0]] = sunArray[1].toString('D j F, H:i:s P');
 		}
 		console.log('\nSun');
 		console.table(sunTimes);
@@ -120,7 +120,7 @@ function dump (which) {
 		moonSorter.sort(function (a, b) { return a[1] - b[1]; });
 		moonTimes = {};
 		for (let moonArray of moonSorter) {
-			moonTimes[moonArray[0]] = moonArray[1].toString('D j F, H:i:s');
+			moonTimes[moonArray[0]] = moonArray[1].toString('D j F, H:i:s P');
 		}
 		console.log('\nMoon');
 		console.table(moonTimes);

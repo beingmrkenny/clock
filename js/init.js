@@ -1,11 +1,25 @@
+const dateTimeDebug = false; // full date time
+const timeDebug = false; // use today, but change the time
+const msAdvance = 1000; // each tick advances the time by this much
+const msInterval = 1000; // how often should each tick happen
+
 document.addEventListener('DOMContentLoaded', function () {
 
 	var clock = new Clock();
 
 	clock.draw();
-	// NOTE Set now here to test different times
-	// clock.setNow('2017-12-14 06:10:40');
-	// clock.debug();
+
+	if (dateTimeDebug) {
+		clock.setNow(dateTimeDebug);
+	}
+
+	if (timeDebug) {
+		let now = new Dative();
+		now.setTimeComponent(timeDebug);
+		clock.setNow(now);
+		clock.debug();
+	}
+
 	clock.start();
 
 	LocationService.execute(Clock.drawLocationSpecificDetails);
@@ -27,5 +41,14 @@ document.addEventListener('DOMContentLoaded', function () {
 		ls.delete('location');
 		LocationService.execute(Clock.drawLocationSpecificDetails);
 	});
+
+	// DEBUG: debuggery
+	// QUESTION: Does this fix the issue where the moon bar is fucked?
+	// QUESTION: Does this need rate limiting or something, so only refresh if it was in the last 15 mins
+	// document.addEventListener('visibilitychange', function () {
+	// 	if (!document.hidden) {
+	// 		LocationService.execute(Clock.drawLocationSpecificDetails);
+	// 	}
+	// });
 
 });
