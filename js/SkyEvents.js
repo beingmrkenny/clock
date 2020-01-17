@@ -384,12 +384,12 @@ class SkyEvents {
 			let skyEvents = new SkyEvents(),
 				moon      = skyEvents.getCurrentMoon();
 
+			moon.rise = new Dative(moon.rise);
+			moon.set = new Dative(moon.set);
+
 			if (clock.now().isBetween(moon.rise, moon.set)) {
-
 				moonlightBar.setAttribute( 'd', SkyEvents.getSegmentPath(clock.now(), moon.set, false) );
-
 			} else if (clock.now() >= moon.set) {
-				// FIXME this seems broken
 				moonlightBar.remove();
 			}
 

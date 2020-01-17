@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	});
 
 	if (!clock.now().isWeekend()) {
-		Clock.drawArc('09.00', '17.30', 'Work');
+		Clock.drawArc('09.00', '17.30', 'Work', true);
 	}
 
 	qid('Cog').addEventListener('click', function () {

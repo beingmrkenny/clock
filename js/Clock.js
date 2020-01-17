@@ -44,8 +44,8 @@ class Clock {
 		}
 
 		if (now == refreshSun) {
-			SkyEvents.drawDaylightHours();
 			SkyEvents.placeSun();
+			SkyEvents.drawDaylightHours();
 		}
 
 		if (now == refreshMoon) {
@@ -84,8 +84,8 @@ class Clock {
 	}
 
 	showTime(dateTime) {
-		var rotate = Time.asClockAngle(dateTime);
-		qid('HourHand').setAttribute('transform', `rotate(${rotate})`);
+		var angle = Time.asClockAngle(dateTime);
+		qid('HourHand').setAttribute('transform', `rotate(${angle})`);
 	}
 
 	showCurrentTime() {
@@ -117,26 +117,19 @@ class Clock {
 	}
 
 	drawHours () {
-
 		var r = .87 * this.radius;
-
+		var hoursAndTicks = qid('HoursAndTicks');
 		for (let h = 0; h < 24; h++) {
-
-			let q = Time.getQForH(h);
-
-			let point = $number.polarToRect(r, q);
-
-			let hour = $dom.createElement(
+			let q = Time.getQForH(h),
+				point = $number.polarToRect(r, q),
+				hour = $dom.createElement(
 				`<text
 					x="${point.x}"
 					y="${point.y}">
 					${h}
 				</text>`, 'svg');
-
-			this.face.appendChild(hour);
-
+			hoursAndTicks.appendChild(hour);
 		}
-
 	}
 
 	drawTicks () {
@@ -151,7 +144,9 @@ class Clock {
 			endRHour      = e * this.radius,
 			endRDefault   = e * this.radius,
 
-			which = 60;
+			which = 60,
+
+			hoursAndTicks = qid('HoursAndTicks');;
 
 		for (let m = 0; m < 1440; m += 15) {
 
@@ -180,7 +175,7 @@ class Clock {
 				start = $number.polarToRect(startR, q),
 				tick = $dom.createElement(`<line x1="${start.x}" y1="${start.y}" x2="${end.x}" y2="${end.y}" class="tick ${className}">`, 'svg');
 
-			this.face.appendChild(tick);
+			hoursAndTicks.appendChild(tick);
 
 			which = (which == 60)
 				? 15
@@ -217,7 +212,7 @@ class Clock {
 		);
 	}
 
-	static drawArc (start, end, id) {
+	static drawArc (start, end, id, accoutrements = false) {
 
 		var clock = new Clock();
 
@@ -235,7 +230,11 @@ class Clock {
 			path = `M ${startPos.x},${startPos.y} A ${radius},${radius} 0 ${largeArcFlag} 1 ${endPos.x},${endPos.y}`,
 			arc = $dom.createElement(`<path d="${path}" id="${id}Arc">`, 'svg');
 
-		clock.face.appendChild(arc);
+		if (accoutrements) {
+			qid('Accoutrements').appendChild(arc);
+		} else {
+			clock.face.appendChild(arc);
+		}
 
 	}
 

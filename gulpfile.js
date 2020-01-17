@@ -81,6 +81,7 @@ function html() {
 }
 
 function cleanup (cb) {
+	fs.removeSync('package-lock.json');
 	fs.removeSync('serve');
 	cb();
 }
