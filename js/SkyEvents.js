@@ -42,19 +42,17 @@ class SkyEvents {
 		var clock = new Clock(),
 			sunrise,
 			sunset,
-			before,
-			after,
 			refresh,
 			dstChange;
 
 		if (this.sunIsUp()) {
 			sunrise = before = this.sun.today.sunrise;
-			sunset = after = this.sun.today.sunset;
+			sunset = this.sun.today.sunset;
 		} else if (this.sunIsDownPM()) {
-			sunrise = after = this.sun.tomorrow.sunrise;
+			sunrise = this.sun.tomorrow.sunrise;
 			sunset = before = this.sun.today.sunset;
 		} else if (this.sunIsDownAM()) {
-			sunrise = after = this.sun.today.sunrise;
+			sunrise = this.sun.today.sunrise;
 			sunset = before = this.sun.yesterday.sunset;
 		}
 
@@ -90,6 +88,16 @@ class SkyEvents {
 	sunIsDownAM () {
 		// QUESTION refer to midnight?
 		return (!this.sunIsUp() && this.now > this.sun.yesterday.sunset && this.now < this.sun.today.sunrise);
+	}
+
+	// TEMP
+	isItDSTTransitionTomorrow () {
+
+	}
+
+	// TEMP
+	wasItDSTTransitionToday () {
+
 	}
 
 

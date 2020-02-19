@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		clock.debug();
 	}
 
-	clock.draw();
+	clock.drawFace();
 
 	clock.start();
 
