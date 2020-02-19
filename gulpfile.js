@@ -129,10 +129,12 @@ function open (cb) {
 }
 
 exports.open = open;
+exports.serve = open;
 
 exports.css = css;
 exports.js = js;
 exports.html = html;
 exports.release = series(cleanup, release);
 exports.local = series(cleanup, local);
+exports.default = series(cleanup, local);
 exports.watch = series(local, watchCommand);
