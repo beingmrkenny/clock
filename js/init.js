@@ -1,16 +1,46 @@
-const dateTimeDebug = false; // full date time
+const dateTimeDebug = '2020-03-29 19:50:50';
+// const dateTimeDebug = '2020-03-29 00:55:50'; // go forward (DST) fucked up sunrise, on both sides of the DST deadline
+
+// const dateTimeDebug = '2020-03-29 10:59:56'; // go forward (DST) fucked up noon
+// const dateTimeDebug = '2020-03-29 10:59:56'; // go forward (DST) fucked up sunset — when I first did this, it was this
+
+// const dateTimeDebug = '2020-03-29 18:50:56'; // go forward (DST) fucked up time
+// const dateTimeDebug = '2020-03-29 18:50:56'; // go forward (DST) fucked up sunset - time wrong too — when I first did this, it was this
+
+// const dateTimeDebug = '2020-03-29 20:50:56'; // go forward (DST) fucked up sunset - time wrong too
+// const dateTimeDebug = '2020-03-29 22:50:56'; // go forward (DST) fucked up sunset - time wrong too
+// const dateTimeDebug = '2020-03-29 23:00:00'; // go forward (DST) all good
+// const dateTimeDebug = '2020-03-30 00:59:56'; // go forward (DST) fucked up both
+// const dateTimeDebug = '2020-03-30 10:59:56'; // go forward (DST) all good
+// const dateTimeDebug = '2020-03-30 19:50:56'; // go forward (DST) all good
+
+// const dateTimeDebug = '2020-03-28 00:59:56'; // go forward (DST) day before, all good
+// const dateTimeDebug = '2020-03-31 00:59:56'; // go forward (DST) day after, all good
+
+// const dateTimeDebug = '2020-10-24 00:59:56'; // go backwards (GMT) day before, all good
+// const dateTimeDebug = '2020-10-25 00:59:56'; // go backwards (GMT) fucked up sunrise
+// const dateTimeDebug = '2020-10-26 00:59:56'; // go backwards (GMT) fucked up sunrise
+// const dateTimeDebug = '2020-10-27 00:59:56'; // go backwards (GMT) day after, all good
+
+// const dateTimeDebug = '2020-01-25 00:59:56'; // winter (GMT)
+// const dateTimeDebug = '2020-06-25 00:59:56'; // summer (DST)
+
+// const dateTimeDebug = false; // full date time
 const timeDebug = false; // use today, but change the time
 const msAdvance = 1000; // each tick advances the time by this much
 const msInterval = 1000; // how often should each tick happen
+const debuggery = true;
 
 document.addEventListener('DOMContentLoaded', function () {
 
-	var clock = new Clock();
+	document.body.classList.toggle('debuggery', debuggery);
 
-	clock.draw();
+	var clock = new Clock();
+	clock.globalVariables.setItem('thatDSTOffset', clock.now().getTimezoneOffsetFromWinter());
 
 	if (dateTimeDebug) {
 		clock.setNow(dateTimeDebug);
+		clock.debug();
 	}
 
 	if (timeDebug) {
@@ -19,6 +49,8 @@ document.addEventListener('DOMContentLoaded', function () {
 		clock.setNow(now);
 		clock.debug();
 	}
+
+	clock.draw();
 
 	clock.start();
 
@@ -33,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	});
 
 	if (!clock.now().isWeekend()) {
-		Clock.drawArc('09.00', '17.30', 'Work', true);
+		Clock.drawArc('09.00', '17.30', 'Work', clock.now(), true);
 	}
 
 	qid('Cog').addEventListener('click', function () {

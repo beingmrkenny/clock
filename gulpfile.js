@@ -136,5 +136,5 @@ exports.js = js;
 exports.html = html;
 exports.release = series(cleanup, release);
 exports.local = series(cleanup, local);
-exports.default = series(cleanup, local);
-exports.watch = series(local, watchCommand);
+exports.default = series(cleanup, local, watchCommand);
+exports.watch = series(cleanup, local, watchCommand);

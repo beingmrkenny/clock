@@ -17,17 +17,28 @@ class Time {
 		return Time.asMillisecondsPastMidnight(givenTime) / 86400000;
 	}
 
+	static durationToClockAngle (duration) {
+		return 360 * (duration/86400000);
+	}
+
 	static asClockAngle (givenTime) {
 		return 180 + (Time.asDecimalThroughDay(givenTime) * 360);
+	}
+
+	// FIXME: this seems to be fewked
+	static asDSTCorrectedClockAngle (givenTime) {
+		givenTime = new Dative(givenTime);
+		return 180 + (Time.asDecimalThroughDay(givenTime) * 360) - Time.durationToClockAngle(givenTime.getTimezoneOffsetFromWinter());
 	}
 
 	static asClockAnglePolar (givenTime) {
 		return - (Time.asClockAngle(givenTime) + 90);
 	}
 
-	static getQForH(h) {
-		let n = (h < 12) ? h + 12 : h - 12;
-		return n * 15;
+	static getQForH(h, isDST = false) {
+		let n = (h < 12) ? h + 12 : h - 12,
+			o = (isDST) ? -15 : 0;
+		return (n * 15) + o;
 	}
 
 	/**
