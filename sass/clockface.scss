@@ -32,6 +32,11 @@
 
 }
 
+.debuggery #DaylightHours #Day,
+.debuggery #DaylightHours #Night {
+	opacity: .6;
+}
+
 #MoonlightHours {
 	transition: opacity 250ms;
 }
@@ -123,6 +128,10 @@ text {
 		font-weight: lighter;
 		text-transform: uppercase;
 	}
+}
+
+.debuggery #Face #Disc {
+	fill: rgba(white, .6);
 }
 
 @keyframes loadingAnimation {

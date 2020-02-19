@@ -126,8 +126,6 @@ function dump (which) {
 		console.table(moonTimes);
 	}
 
-	console.log('');
-
 	return 'fin';
 }
 

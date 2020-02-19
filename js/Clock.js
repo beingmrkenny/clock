@@ -17,20 +17,32 @@ class Clock {
 
 	now () {
 		var now = new Dative(this.globalVariables.getItem('now') || null);
-			now.setMilliseconds(0);
+		now.setMilliseconds(0);
 		return new Dative(now);
 	}
 
 	setNow (datetimeToShow) {
-		this.globalVariables.setItem('now', new Dative(datetimeToShow));
+		let newNow = new Dative(datetimeToShow, false);
+		if (typeof datetimeToShow == 'string') {
+			let timeComponent = Dative.getTimeComponentFromDateDataIfTimeString(datetimeToShow);
+			newNow.setHours        ( newNow.getHours()        + (timeComponent[0] - newNow.getHours()) );
+			newNow.setMinutes      ( newNow.getMinutes()      + (timeComponent[1] - newNow.getMinutes()) );
+			newNow.setSeconds      ( newNow.getSeconds()      + (timeComponent[2] - newNow.getSeconds()) );
+			newNow.setMilliseconds ( newNow.getMilliseconds() + (timeComponent[3] - newNow.getMilliseconds()) );
+		}
+		this.globalVariables.setItem('now', newNow);
 	}
 
 	tick () {
 
-		var now = this.globalVariables.getItem('now');
-		if (now) {
-			this.setNow(now.addMilliseconds(msAdvance));
-		}
+		// TEMP: pissy code
+		var thisDSTOffset = this.now().getTimezoneOffsetFromWinter();
+		// 	thatDSTOffset = this.globalVariables.getItem('thatDSTOffset');
+		// if (thisDSTOffset !== thatDSTOffset) {
+		// 	this.reDraw();
+		// }
+
+		this.globalVariables.setItem('thatDSTOffset', thisDSTOffset);
 
 		this.showCurrentTime();
 		this.showCurrentDate();
@@ -41,6 +53,11 @@ class Clock {
 
 		if (this.globalVariables.getItem('debug')) {
 			qid('DebugTime').textContent = new Dative(this.now()).toString('j M, H:i:s P');
+		}
+
+		// TEMP
+		if (now == refreshSun || now == refreshMoon) {
+			this.drawHours();
 		}
 
 		if (now == refreshSun) {
@@ -57,6 +74,11 @@ class Clock {
 			LocationService.execute(SkyEvents.updateMoonlightBar, true);
 		}
 
+		var savedNow = this.globalVariables.getItem('now');
+		if (savedNow) {
+			this.setNow(savedNow.addMilliseconds((typeof MS_ADVANCE == 'number') ? MS_ADVANCE : 1000));
+		}
+
 	}
 
 	start () {
@@ -64,6 +86,8 @@ class Clock {
 		var timer;
 
 		this.stop();
+		this.globalVariables.setItem('thatDSTOffset', this.now().getTimezoneOffsetFromWinter());
+
 		this.tick();
 		timer = function () {
 			var clock = new Clock();
@@ -72,7 +96,7 @@ class Clock {
 
 		this.globalVariables.setItem(
 			'tickTimer',
-			setInterval(timer, msInterval)
+			setInterval(timer, (typeof MS_INTERVAL == 'number') ? MS_INTERVAL : 1000)
 		);
 
 		qid('HourHand').style.opacity = 1;
@@ -84,7 +108,7 @@ class Clock {
 	}
 
 	showTime(dateTime) {
-		var angle = Time.asClockAngle(dateTime);
+		var angle = Time.asDSTCorrectedClockAngle(dateTime);
 		qid('HourHand').setAttribute('transform', `rotate(${angle})`);
 	}
 
@@ -108,19 +132,60 @@ class Clock {
 
 	// Drawing stuff
 
-	draw () {
-		this.drawHours();
+	drawFace () {
+		// this.drawHours();
 		this.drawTicks();
 		this.drawHand();
-
 		qid('Disc').setAttribute('r', this.radius);
 	}
 
-	drawHours () {
-		var r = .87 * this.radius;
-		var hoursAndTicks = qid('HoursAndTicks');
+	static drawHours () {
+
+		const TODAY = 0;
+		const TOMORROW = 1;
+
+		let clock = new Clock(),
+			skyEvents = new SkyEvents();
+
+		let day = TODAY;
+		let nightPM = TODAY;
+		let nightAM = TODAY;
+
+		if (skyEvents.sunIsUp()) {
+			if (skyEvents.isItDSTTransitionTomorrow()) {
+				nightAM = TOMORROW;
+			} else if (!skyEvents.wasItDSTTransitionToday()) {
+				// return;
+			}
+		} else if (skyEvents.sunIsDownPM()) {
+			if (skyEvents.isItDSTTransitionTomorrow()) {
+				nightAM = TOMORROW;
+				day = TOMORROW;
+			} else {
+				// return;
+			}
+		}
+
+		// TEMP: TODO how do we turn this data into hours to write
+		// assume it's just a list of hours
+		// array of numbers, index will helpfully be the position on the clock, value will be the hour to show
+
+		for (let hour of qq('#HoursAndTicks text')) {
+			hour.remove();
+		}
+
+		let r = .87 * clock.radius,
+			hoursAndTicks = qid('HoursAndTicks');
+
+		// TEMP: this is where you got up to
+		let dstChange = Dative.findTimeOfDSTChange(clock.now());
+		if (dstChange) {
+			let amountOfClockToFuckUpInMilliseconds = dstChange.getTimezoneOffsetFromWinter();
+		}
+
+		let isDST = clock.now().isDST(); // REVIEW: this needs to not fire if there's a dst transition nearby
 		for (let h = 0; h < 24; h++) {
-			let q = Time.getQForH(h),
+			let q = Time.getQForH(h, isDST),
 				point = $number.polarToRect(r, q),
 				hour = $dom.createElement(
 				`<text
@@ -130,6 +195,7 @@ class Clock {
 				</text>`, 'svg');
 			hoursAndTicks.appendChild(hour);
 		}
+
 	}
 
 	drawTicks () {
@@ -197,23 +263,20 @@ class Clock {
 		SkyEvents.drawMoonlightArc();
 		SkyEvents.drawMoonlightBar();
 		SkyEvents.changeMoonPhase();
+		Clock.drawHours();
 		qid('MoonlightHours').classList.toggle(
 			'transparent',
 			!(clock.data.getItem('moonlightVisible'))
 		);
-		// DEBUG: debuggery
-		console.log(
-			'Clock.drawLocationSpecificDetails called ' +
-			new Dative().toString('Y-m-d H:i:s')
-		);
+		// dump('sun'); // DEBUG
 	}
 
-	static drawArc (start, end, id, accoutrements = false) {
+	static drawArc (start, end, id, now, accoutrements = false) {
 
 		var clock = new Clock();
 
-		start = new Dative().setTimeComponent(new Dative(start).toString('H:i:s.u'));
-		end = new Dative().setTimeComponent(new Dative(end).toString('H:i:s.u'));
+		start = new Dative(now).setTimeComponent(new Dative(start).toString('H:i:s.u'));
+		end = new Dative(now).setTimeComponent(new Dative(end).toString('H:i:s.u'));
 
 		if (start > end) {
 			start = start.addDays(-1);

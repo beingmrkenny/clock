@@ -42,7 +42,8 @@ class SkyEvents {
 		var clock = new Clock(),
 			sunrise,
 			sunset,
-			refresh;
+			refresh,
+			dstChange;
 
 		if (this.sunIsUp()) {
 			sunrise = this.sun.today.sunrise;
@@ -64,9 +65,10 @@ class SkyEvents {
 
 		// TODO noon should refresh in the same way that moonnoon refreshes
 		return {
-			rise : sunrise,
-			set : sunset,
-			noon : this.sun.today.solarNoon
+			rise : new Dative(sunrise),
+			set : new Dative(sunset),
+			noon : new Dative(this.sun.today.solarNoon),
+			dstChange : dstChange
 		};
 	}
 
@@ -86,6 +88,16 @@ class SkyEvents {
 	sunIsDownAM () {
 		// QUESTION refer to midnight?
 		return (!this.sunIsUp() && this.now > this.sun.yesterday.sunset && this.now < this.sun.today.sunrise);
+	}
+
+	// TEMP
+	isItDSTTransitionTomorrow () {
+
+	}
+
+	// TEMP
+	wasItDSTTransitionToday () {
+
 	}
 
 
@@ -218,7 +230,7 @@ class SkyEvents {
 			sun       = skyEvents.getCurrentSun();
 		if (sun) {
 			let clock       = new Clock(),
-				pos         = $number.polarToRect(clock.radius * 1.5, Time.asClockAngle(sun.noon)),
+				pos         = $number.polarToRect(clock.radius * 1.5, Time.asDSTCorrectedClockAngle(sun.noon)),
 				sunIcon     = qid('Sun'),
 				sunGradient = qid('SunGradient'),
 				sunBurst   = qid('SunBurst');
@@ -241,7 +253,7 @@ class SkyEvents {
 			moon = skyEvents.getCurrentMoon();
 		if (moon) {
 			let clock    = new Clock(),
-				pos      = $number.polarToRect(clock.radius * 1.3, Time.asClockAngle(moon.noon)),
+				pos      = $number.polarToRect(clock.radius * 1.3, Time.asDSTCorrectedClockAngle(moon.noon)),
 				moonIcon = qid('Moon'),
 				r		 = moonIcon.getAttribute('width') / 2;
 			moonIcon.setAttribute('x', pos.x - r);
@@ -251,23 +263,24 @@ class SkyEvents {
 		}
 	}
 
-	static getSegmentPath (start, end, daylightHours) {
+	static getSegmentPath (start, end, daylightHours = false) {
 
-		start = new Dative().setTimeComponent(
-			new Dative(start).toString('H:i:s.u')
-		);
-		end = new Dative().setTimeComponent(
-			new Dative(end).toString('H:i:s.u')
-		);
+		start = new Dative(start);
+		end = new Dative(end);
 
-		if (start > end) {
-			start = start.addDays(-1);
-		}
+		// BUG: DST fuckery is making a problem on DST day
 
-		var radius = (daylightHours) ? 400 : 1.3 * (new Clock).radius;
-		var largeArcFlag = ((end - start) > (86400000 / 2)) ? 1 : 0,
-			startPos = $number.polarToRect(radius, Time.asClockAngle(start)),
-			endPos   = $number.polarToRect(radius, Time.asClockAngle(end));
+		// NOTE: this malarkey was buggering up time zone informations by using today's date.
+		// Maybe it needs to fuck off? I've fucked it off for now, but tmight have been a bug fix for some old crap
+		// start = new Dative().setTimeComponent( new Dative(start).toString('H:i:s.u') );
+		// end = new Dative().setTimeComponent( new Dative(end).toString('H:i:s.u') );
+
+		var timeAsClockAngleMethod = (daylightHours) ? Time.asClockAngle : Time.asDSTCorrectedClockAngle;
+
+		var radius       = (daylightHours) ? 400 : 1.3 * (new Clock).radius,
+			largeArcFlag = (daylightHours) ? 1 : (end - start > (86400000 / 2)) ? 1 : 0,
+			startPos     = $number.polarToRect(radius, timeAsClockAngleMethod(start)),
+			endPos       = $number.polarToRect(radius, timeAsClockAngleMethod(end));
 
 		if (daylightHours) {
 			return `M 0 0 L ${startPos.x},${startPos.y} A ${radius},${radius} 0 ${largeArcFlag} 1 ${endPos.x},${endPos.y} Z`;
@@ -282,21 +295,25 @@ class SkyEvents {
 			day           = qid('Day'),
 			night         = qid('Night'),
 			skyEvents     = new SkyEvents(),
-			sun           = skyEvents.getCurrentSun(),
-			dayPath       = SkyEvents.getSegmentPath(sun.rise, sun.set, true),
-			nightPath     = SkyEvents.getSegmentPath(sun.set, sun.rise, true);
+			sun           = skyEvents.getCurrentSun();
+
+		// var diff = sun.set.getDate() - sun.rise.getDate();
+		// if (diff !== 0) {
+		// 	sun.rise = sun.rise.addDays(diff);
+		// }
+
+		var dayPath       = SkyEvents.getSegmentPath(sun.rise, sun.set, 'day'),
+			nightPath     = SkyEvents.getSegmentPath(sun.set, sun.rise, 'night');
 
 		if (day) {
-			day.setAttribute('d', dayPath);
-		} else {
-			daylightHours.prependChild($dom.createElement(`<path d="${dayPath}" id="Day" class="transparent">`, 'svg'));
+			day.remove();
 		}
+		daylightHours.prependChild($dom.createElement(`<path d="${dayPath}" id="Day" class="transparent">`, 'svg'));
 
 		if (night) {
-			night.setAttribute('d', nightPath);
-		} else {
-			daylightHours.prependChild($dom.createElement(`<path d="${nightPath}" id="Night" class="transparent">`, 'svg'));
+			night.remove();
 		}
+		daylightHours.prependChild($dom.createElement(`<path d="${nightPath}" id="Night" class="transparent">`, 'svg'));
 
 		setTimeout(function () {
 			qid('Day').classList.remove('transparent');
