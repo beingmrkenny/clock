@@ -46,14 +46,14 @@ class SkyEvents {
 			dstChange;
 
 		if (this.sunIsUp()) {
-			sunrise = before = this.sun.today.sunrise;
+			sunrise = this.sun.today.sunrise;
 			sunset = this.sun.today.sunset;
 		} else if (this.sunIsDownPM()) {
 			sunrise = this.sun.tomorrow.sunrise;
-			sunset = before = this.sun.today.sunset;
+			sunset = this.sun.today.sunset;
 		} else if (this.sunIsDownAM()) {
 			sunrise = this.sun.today.sunrise;
-			sunset = before = this.sun.yesterday.sunset;
+			sunset = this.sun.yesterday.sunset;
 		}
 
 		if (sunset <= this.now && sunrise > this.now) {

@@ -36,7 +36,7 @@ class Clock {
 	tick () {
 
 		// TEMP: pissy code
-		// var thisDSTOffset = this.now().getTimezoneOffsetFromWinter(),
+		var thisDSTOffset = this.now().getTimezoneOffsetFromWinter();
 		// 	thatDSTOffset = this.globalVariables.getItem('thatDSTOffset');
 		// if (thisDSTOffset !== thatDSTOffset) {
 		// 	this.reDraw();
@@ -76,7 +76,7 @@ class Clock {
 
 		var savedNow = this.globalVariables.getItem('now');
 		if (savedNow) {
-			this.setNow(savedNow.addMilliseconds(msAdvance));
+			this.setNow(savedNow.addMilliseconds(MS_ADVANCE));
 		}
 
 	}
@@ -96,7 +96,7 @@ class Clock {
 
 		this.globalVariables.setItem(
 			'tickTimer',
-			setInterval(timer, msInterval)
+			setInterval(timer, MS_INTERVAL)
 		);
 
 		qid('HourHand').style.opacity = 1;
@@ -181,7 +181,7 @@ class Clock {
 		// TEMP: this is where you got up to
 		let dstChange = Dative.findTimeOfDSTChange(this.now());
 		if (dstChange) {
-			let amountOfClockToFuckUpInMilliseconds = dstChange.getTimezoneOffsetFromWinter());
+			let amountOfClockToFuckUpInMilliseconds = dstChange.getTimezoneOffsetFromWinter();
 		}
 
 		let isDST = this.now().isDST(); // REVIEW: this needs to not fire if there's a dst transition nearby
