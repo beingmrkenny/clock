@@ -76,7 +76,7 @@ class Clock {
 
 		var savedNow = this.globalVariables.getItem('now');
 		if (savedNow) {
-			this.setNow(savedNow.addMilliseconds(MS_ADVANCE));
+			this.setNow(savedNow.addMilliseconds((typeof MS_ADVANCE == 'number') ? MS_ADVANCE : 1000));
 		}
 
 	}
@@ -96,7 +96,7 @@ class Clock {
 
 		this.globalVariables.setItem(
 			'tickTimer',
-			setInterval(timer, MS_INTERVAL)
+			setInterval(timer, (typeof MS_INTERVAL == 'number') ? MS_INTERVAL : 1000)
 		);
 
 		qid('HourHand').style.opacity = 1;
@@ -133,18 +133,19 @@ class Clock {
 	// Drawing stuff
 
 	drawFace () {
-		this.drawHours();
+		// this.drawHours();
 		this.drawTicks();
 		this.drawHand();
 		qid('Disc').setAttribute('r', this.radius);
 	}
 
-	drawHours () {
+	static drawHours () {
 
 		const TODAY = 0;
 		const TOMORROW = 1;
 
-		let skyEvents = new SkyEvents();
+		let clock = new Clock(),
+			skyEvents = new SkyEvents();
 
 		let day = TODAY;
 		let nightPM = TODAY;
@@ -154,14 +155,14 @@ class Clock {
 			if (skyEvents.isItDSTTransitionTomorrow()) {
 				nightAM = TOMORROW;
 			} else if (!skyEvents.wasItDSTTransitionToday()) {
-				return;
+				// return;
 			}
 		} else if (skyEvents.sunIsDownPM()) {
 			if (skyEvents.isItDSTTransitionTomorrow()) {
 				nightAM = TOMORROW;
 				day = TOMORROW;
 			} else {
-				return;
+				// return;
 			}
 		}
 
@@ -169,22 +170,20 @@ class Clock {
 		// assume it's just a list of hours
 		// array of numbers, index will helpfully be the position on the clock, value will be the hour to show
 
-
-
 		for (let hour of qq('#HoursAndTicks text')) {
 			hour.remove();
 		}
 
-		let r = .87 * this.radius,
+		let r = .87 * clock.radius,
 			hoursAndTicks = qid('HoursAndTicks');
 
 		// TEMP: this is where you got up to
-		let dstChange = Dative.findTimeOfDSTChange(this.now());
+		let dstChange = Dative.findTimeOfDSTChange(clock.now());
 		if (dstChange) {
 			let amountOfClockToFuckUpInMilliseconds = dstChange.getTimezoneOffsetFromWinter();
 		}
 
-		let isDST = this.now().isDST(); // REVIEW: this needs to not fire if there's a dst transition nearby
+		let isDST = clock.now().isDST(); // REVIEW: this needs to not fire if there's a dst transition nearby
 		for (let h = 0; h < 24; h++) {
 			let q = Time.getQForH(h, isDST),
 				point = $number.polarToRect(r, q),
@@ -264,6 +263,7 @@ class Clock {
 		SkyEvents.drawMoonlightArc();
 		SkyEvents.drawMoonlightBar();
 		SkyEvents.changeMoonPhase();
+		Clock.drawHours();
 		qid('MoonlightHours').classList.toggle(
 			'transparent',
 			!(clock.data.getItem('moonlightVisible'))

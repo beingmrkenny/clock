@@ -1,4 +1,4 @@
-const DATE_TIME_DEBUG = '2020-03-29 19:50:50';
+// const DATE_TIME_DEBUG = '2020-03-29 19:50:50';
 // const DATE_TIME_DEBUG = '2020-03-29 00:55:50'; // go forward (DST) fucked up sunrise, on both sides of the DST deadline
 
 // const DATE_TIME_DEBUG = '2020-03-29 10:59:56'; // go forward (DST) fucked up noon
@@ -33,18 +33,20 @@ const DEBUGGERY = true;
 
 document.addEventListener('DOMContentLoaded', function () {
 
-	document.body.classList.toggle('debuggery', DEBUGGERY);
+	if (typeof DEBUGGERY == 'boolean' && DEBUGGERY == true) {
+		document.body.classList.add('debuggery');
+	}
 
 	var clock = new Clock();
 
 	clock.globalVariables.setItem('thatDSTOffset', clock.now().getTimezoneOffsetFromWinter());
 
-	if (DATE_TIME_DEBUG) {
+	if (typeof DATE_TIME_DEBUG == 'string') {
 		clock.setNow(DATE_TIME_DEBUG);
 		clock.debug();
 	}
 
-	if (TIME_DEBUG) {
+	if (typeof TIME_DEBUG == 'boolean' && TIME_DEBUG == true) {
 		let now = new Dative();
 		now.setTimeComponent(TIME_DEBUG);
 		clock.setNow(now);
