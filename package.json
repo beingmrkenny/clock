@@ -3,27 +3,46 @@
 	"version": "1.0.0",
 	"description": "",
 	"main": "gulpfile.js",
-	"dependencies": {
-		"fs-extra": "",
-		"google-closure-compiler": "",
-		"gulp": "",
-		"gulp-rename": "",
-		"gulp-replace": "",
-		"gulp-sass": "",
-		"gulp-shell": "",
-		"gulp-sourcemaps": "",
-		"node-notify": "",
-		"node-sass": ""
+	"devDependencies": {
+		"fs-extra": "^11.1.0",
+		"google-closure-compiler": "^20230103.0.0",
+		"npm-watch": "^0.11.0",
+		"replace-in-file": "^6.3.5"
 	},
-	"devDependencies": {},
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"css": "mkdir -p serve && sass sass/init.scss serve/clock.css",
+		"js": "mkdir -p serve && node build/compile.js",
+		"html": "mkdir -p serve && node build/html.js",
+		"serve": "node build/serve.js",
+		"watch": "npm-watch"
+	},
+	"watch": {
+		"css": {
+			"patterns": [
+				"sass/**/*.scss"
+			],
+			"extensions": "scss"
+		},
+		"html": {
+			"patterns": [
+				"html/index.html"
+			],
+			"extensions": "html"
+		},
+		"js": {
+			"patterns": [
+				"js/*.js",
+				"commun/js/**/*.js"
+			],
+			"extensions": "js"
+		}
 	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/beingmrkenny/clock.git"
 	},
-	"author": "",
+	"author": "Mark Kenny",
 	"license": "ISC",
 	"bugs": {
 		"url": "https://github.com/beingmrkenny/clock/issues"
