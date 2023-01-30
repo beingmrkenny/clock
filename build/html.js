@@ -9,7 +9,7 @@ exports.compileHTML = () => {
     try {
         const results = replace.sync({
             files: 'serve/index.html',
-            from: 'refresh=refresh',
+            from: /refresh=refresh/g,
             to: `refresh=${(new Dative()).toString('YmdHis')}`,
         });
         console.log('Replacement results:', results);

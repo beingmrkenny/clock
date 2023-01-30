@@ -3,7 +3,7 @@ class Dialog {
 	constructor (header, content, action) {
 		var self = this;
 
-		self.id = $html.getIdFromString(header);
+		self.id = header.replace(/ /g, '');
 
 		var clock = new Clock();
 		clock.globalVariables.setItem('dialogAction', action);
@@ -16,7 +16,7 @@ class Dialog {
 
 			let contentString = (typeof content == 'string') ? `<p>${content}</p>` : '';
 
-			self.dialog = $dom.createElement(`
+			self.dialog = createElement(`
 				<dialog open id="${self.id}">
 					<form method="dialog">
 						<h2>${header}</h2>
@@ -50,7 +50,6 @@ class Dialog {
 	}
 
 	static submit () {
-		var self = this;
 		var clock = new Clock();
 		var action = clock.globalVariables.getItem('dialogAction');
 		action();

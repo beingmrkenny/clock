@@ -121,8 +121,8 @@ class Clock {
 		var hoursAndTicks = qid('HoursAndTicks');
 		for (let h = 0; h < 24; h++) {
 			let q = Time.getQForH(h),
-				point = $number.polarToRect(r, q),
-				hour = $dom.createElement(
+				point = polarToRect(r, q),
+				hour = createElement(
 				`<text
 					x="${point.x}"
 					y="${point.y}">
@@ -171,9 +171,9 @@ class Clock {
 			}
 
 			let q = (m/15) * 3.75,
-				end = $number.polarToRect(endR, q),
-				start = $number.polarToRect(startR, q),
-				tick = $dom.createElement(`<line x1="${start.x}" y1="${start.y}" x2="${end.x}" y2="${end.y}" class="tick ${className}">`, 'svg');
+				end = polarToRect(endR, q),
+				start = polarToRect(startR, q),
+				tick = createElement(`<line x1="${start.x}" y1="${start.y}" x2="${end.x}" y2="${end.y}" class="tick ${className}">`, 'svg');
 
 			hoursAndTicks.appendChild(tick);
 
@@ -185,7 +185,7 @@ class Clock {
 	}
 
 	drawHand () {
-		var hand = $dom.createElement(`<line x1="0" y1="0" x2="0" y2="${-.94 * this.radius}" id="HourHand" />`, 'svg');
+		var hand = createElement(`<line x1="0" y1="0" x2="0" y2="${-.94 * this.radius}" id="HourHand" />`, 'svg');
 		this.face.appendChild(hand);
 	}
 
@@ -221,10 +221,10 @@ class Clock {
 
 		var radius = 1 * clock.radius,
 			largeArcFlag = ((end - start) > (86400000 / 2)) ? 1 : 0,
-			startPos = $number.polarToRect(radius, Time.asClockAngle(start)),
-			endPos   = $number.polarToRect(radius, Time.asClockAngle(end)),
+			startPos = polarToRect(radius, Time.asClockAngle(start)),
+			endPos   = polarToRect(radius, Time.asClockAngle(end)),
 			path = `M ${startPos.x},${startPos.y} A ${radius},${radius} 0 ${largeArcFlag} 1 ${endPos.x},${endPos.y}`,
-			arc = $dom.createElement(`<path d="${path}" id="${id}Arc">`, 'svg');
+			arc = createElement(`<path d="${path}" id="${id}Arc">`, 'svg');
 
 		if (accoutrements) {
 			qid('Accoutrements').appendChild(arc);
@@ -237,7 +237,7 @@ class Clock {
 	static drawLoadingSpinner () {
 
 		var clock = new Clock();
-		var la = $dom.createElement(
+		var la = createElement(
 			`<circle cx="0" cy="0" r="${clock.radius * .70}" id="LoadingIndicator" class="hide"></circle>`, 'svg'
 		);
 		qid('Spinner').appendChild(la);
@@ -265,7 +265,7 @@ class Clock {
 
 	debug () {
 		if (!qid('DebugTime')) {
-			document.body.appendChild($dom.createElement('<time id="DebugTime"></time>'));
+			document.body.appendChild(createElement('<time id="DebugTime"></time>'));
 		}
 		this.globalVariables.setItem('debug', true);
 		var moonStore = new LocalStorage('MOON');

@@ -15,18 +15,18 @@ function placeDot() {
 	}
 
 	if (angle) {
-		let coords = $number.polarToRect(1.1 * (new Clock).radius, angle);
+		let coords = polarToRect(1.1 * (new Clock).radius, angle);
 		cx = coords.x;
 		cy = coords.y;
 
 		parentElement.appendChild(
-			$dom.createElement(`<circle fill="${color}" r="3" cx="${cx}" cy="${cy}">`, 'svg')
+			createElement(`<circle fill="${color}" r="3" cx="${cx}" cy="${cy}">`, 'svg')
 		);
 
 		if (day) {
-			let coords = $number.polarToRect(1.3 * (new Clock).radius, angle);
+			let coords = polarToRect(1.3 * (new Clock).radius, angle);
 			parentElement.appendChild(
-				$dom.createElement(`<text fill="${color}" x="${coords.x}" y="${coords.y}">${day}</text>`, 'svg')
+				createElement(`<text fill="${color}" x="${coords.x}" y="${coords.y}">${day}</text>`, 'svg')
 			);
 		}
 	}
@@ -59,8 +59,8 @@ function placeArc() {
 
 	let radius = (1 + counter/10) * (new Clock).radius,
 		startAngle = Time.asClockAngle(start),
-		startCoords  = $number.polarToRect(radius, startAngle),
-		finishCoords = $number.polarToRect(radius, Time.asClockAngle(finish));
+		startCoords  = polarToRect(radius, startAngle),
+		finishCoords = polarToRect(radius, Time.asClockAngle(finish));
 
 	let d = `
 		M ${startCoords.x},${startCoords.y}
@@ -69,21 +69,21 @@ function placeArc() {
 	var day = (new Dative(start)).toString('d');
 
 	if (day) {
-		let coords = $number.polarToRect(1.3 * (new Clock).radius, startAngle);
+		let coords = polarToRect(1.3 * (new Clock).radius, startAngle);
 		parentElement.appendChild(
-			$dom.createElement(`<text fill="${color}" x="${coords.x}" y="${coords.y}">${day}</text>`, 'svg')
+			createElement(`<text fill="${color}" x="${coords.x}" y="${coords.y}">${day}</text>`, 'svg')
 		);
 	}
 
 	parentElement.appendChild(
-		$dom.createElement(`<path stroke="${color}" stroke-width="2" fill="none" d="${d}">`, 'svg')
+		createElement(`<path stroke="${color}" stroke-width="2" fill="none" d="${d}">`, 'svg')
 	);
 
 }
 
 function placeLine(x1, y1, x2, y2) {
 	qid('DaylightHoursSVG').appendChild(
-		$dom.createElement(`<line stroke="red" stroke-width="1" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" />`, 'svg')
+		createElement(`<line stroke="red" stroke-width="1" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" />`, 'svg')
 	);
 }
 

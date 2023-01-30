@@ -12,8 +12,6 @@ class SkyEvents {
 
 		if (this.location) {
 
-			let today = new Dative ();
-
 			let times = [
 				new Dative(this.now).addDays(-1),
 				new Dative(this.now),
@@ -26,8 +24,8 @@ class SkyEvents {
 				tomorrow:  SunCalc.getTimes(times[2], this.location.latitude, this.location.longitude),
 			};
 
-			for (let day in this.sun) {
-				for (let eventName in this.sun[day]) {
+			for (const day in this.sun) {
+				for (const eventName in this.sun[day]) {
 					this.sun[day][eventName] = new Date(this.sun[day][eventName].setMilliseconds(0));
 				}
 			}
@@ -133,12 +131,11 @@ class SkyEvents {
 				moonEvents.pop();
 			}
 
-			var moon, moonTimes = [];
+			var moon = {}, moonTimes = [];
 			for (let i = 0, x = moonEvents.length; i<x; i++) {
 
 				if (moonEvents[i].name == 'rise') {
 
-					moon = {};
 					moon.rise = moonEvents[i].time;
 
 				} else if (moonEvents[i].name == 'set') {
@@ -218,7 +215,7 @@ class SkyEvents {
 			sun       = skyEvents.getCurrentSun();
 		if (sun) {
 			let clock       = new Clock(),
-				pos         = $number.polarToRect(clock.radius * 1.5, Time.asClockAngle(sun.noon)),
+				pos         = polarToRect(clock.radius * 1.5, Time.asClockAngle(sun.noon)),
 				sunIcon     = qid('Sun'),
 				sunGradient = qid('SunGradient'),
 				sunBurst   = qid('SunBurst');
@@ -241,7 +238,7 @@ class SkyEvents {
 			moon = skyEvents.getCurrentMoon();
 		if (moon) {
 			let clock    = new Clock(),
-				pos      = $number.polarToRect(clock.radius * 1.3, Time.asClockAngle(moon.noon)),
+				pos      = polarToRect(clock.radius * 1.3, Time.asClockAngle(moon.noon)),
 				moonIcon = qid('Moon'),
 				r		 = moonIcon.getAttribute('width') / 2;
 			moonIcon.setAttribute('x', pos.x - r);
@@ -266,8 +263,8 @@ class SkyEvents {
 
 		var radius = (daylightHours) ? 400 : 1.3 * (new Clock).radius;
 		var largeArcFlag = ((end - start) > (86400000 / 2)) ? 1 : 0,
-			startPos = $number.polarToRect(radius, Time.asClockAngle(start)),
-			endPos   = $number.polarToRect(radius, Time.asClockAngle(end));
+			startPos = polarToRect(radius, Time.asClockAngle(start)),
+			endPos   = polarToRect(radius, Time.asClockAngle(end));
 
 		if (daylightHours) {
 			return `M 0 0 L ${startPos.x},${startPos.y} A ${radius},${radius} 0 ${largeArcFlag} 1 ${endPos.x},${endPos.y} Z`;
@@ -277,8 +274,7 @@ class SkyEvents {
 	}
 
 	static drawDaylightHours () {
-		var clock         = new Clock(),
-			daylightHours = qid('DaylightHours'),
+		var daylightHours = qid('DaylightHours'),
 			day           = qid('Day'),
 			night         = qid('Night'),
 			skyEvents     = new SkyEvents(),
@@ -289,13 +285,13 @@ class SkyEvents {
 		if (day) {
 			day.setAttribute('d', dayPath);
 		} else {
-			daylightHours.prependChild($dom.createElement(`<path d="${dayPath}" id="Day" class="transparent">`, 'svg'));
+			daylightHours.prepend(createElement(`<path d="${dayPath}" id="Day" class="transparent">`, 'svg'));
 		}
 
 		if (night) {
 			night.setAttribute('d', nightPath);
 		} else {
-			daylightHours.prependChild($dom.createElement(`<path d="${nightPath}" id="Night" class="transparent">`, 'svg'));
+			daylightHours.prepend(createElement(`<path d="${nightPath}" id="Night" class="transparent">`, 'svg'));
 		}
 
 		setTimeout(function () {
@@ -317,7 +313,7 @@ class SkyEvents {
 			moonlight.setAttribute('d', moonPath);
 		} else {
 			qid('MoonlightHours').appendChild(
-				$dom.createElement(`<path d="${moonPath}" id="MoonlightArc">`, 'svg')
+				createElement(`<path d="${moonPath}" id="MoonlightArc">`, 'svg')
 			);
 		}
 
@@ -360,8 +356,8 @@ class SkyEvents {
 		if (moonlightBar) {
 			moonlightBar.setAttribute('d', moonPath);
 		} else {
-			qid('MoonlightHours').prependChild(
-				$dom.createElement(`<path d="${moonPath}" id="MoonlightBar">`, 'svg')
+			qid('MoonlightHours').prepend(
+				createElement(`<path d="${moonPath}" id="MoonlightBar">`, 'svg')
 			);
 			removeTransparency = true;
 		}

@@ -1,5 +1,6 @@
 const fs = require('fs-extra');
 const ClosureCompiler = require('google-closure-compiler').compiler;
+const exec = require('child_process').execSync;
 
 exports.compileJS = () => {
 
@@ -9,34 +10,28 @@ exports.compileJS = () => {
         "commun/js/classes/LocalStorage.js",
         "commun/js/classes/GlobalVariables.js",
         "commun/js/includes/dom.js",
-        "commun/js/includes/html.js",
-        "commun/js/includes/javascript.js",
-        "commun/js/includes/numbers.js",
-        "commun/js/includes/strings.js",
-        "commun/js/includes/object.js",
+        "commun/js/classes/Dative.js",
         "js/*.js",
     ];
 
-    fs.copySync('commun/js/classes/Dative.js', 'serve/Dative.js');
-
     const closureCompiler = new ClosureCompiler({
-        compilation_level: 'ADVANCED',
         js: globs,
         warning_level: 'QUIET',
-        language_in: 'ECMASCRIPT6_STRICT',
-        language_out: 'ECMASCRIPT5_STRICT',
         js_output_file: 'serve/clock.js',
-        create_source_map: 'serve/clock.js.map',
-        externs: 'build/externs.js'
+        create_source_map: 'serve/clock.js.map'
     });
 
-    // TODO: shove the fackin sourcemap link on the end of clock.js
-
-    const compilerProcess = closureCompiler.run((exitCode, stdOut, stdErr) => {
+    closureCompiler.run((exitCode, stdOut, stdErr) => {
         console.log(exitCode);
         console.log(stdOut);
         console.log(stdErr);
+        fs.appendFileSync('serve/clock.js', '//# sourceMappingURL=clock.js.map');
+        const sourcemap = JSON.parse(fs.readFileSync('serve/clock.js.map'));
+        sourcemap.sources.forEach((item, i) => sourcemap.sources[i] = `../${item}`);
+        fs.writeFileSync('serve/clock.js.map', JSON.stringify(sourcemap));
+        exec('say beep');
     });
+
 }
 
 exports.compileJS();

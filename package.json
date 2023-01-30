@@ -15,7 +15,7 @@
 		"js": "mkdir -p serve && node build/compile.js",
 		"html": "mkdir -p serve && node build/html.js",
 		"serve": "node build/serve.js",
-		"watch": "npm-watch"
+		"watch": "node build/serve.js && npm-watch"
 	},
 	"watch": {
 		"css": {

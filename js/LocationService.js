@@ -35,7 +35,7 @@ class LocationService {
 
 		new Dialog (
 			'Location Permission',
-			'Your location is needed to work out sunrise and sunset times. It will be stored locally on your phone/computer, and not sent anywhere else.',
+			'Your location is needed to work out sunrise and sunset times. It will be stored locally on device, and not sent anywhere else.',
 			function () {
 				var clock = new Clock();
 				clock.data.setItem('havePermission', true);
