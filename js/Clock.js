@@ -134,20 +134,26 @@ class Clock {
 
 	drawTicks () {
 
-		var s = .955,
-			e = .985;
+		const
+			minutesPerTick = 15,
+			minutesIn24Hours = 1440,
+			numberOfTicks = minutesIn24Hours / minutesPerTick,
+			anglePerTick = 360 / numberOfTicks,
+			tickStart = .955,
+			tickEnd = .985;
 
-		var startRHour    = s * this.radius,
-			startRHalf    = s * this.radius,
-			startRQuarter = s * this.radius,
+		const
+			startRHour    = tickStart * this.radius,
+			startRHalf    = tickStart * this.radius,
+			startRQuarter = tickStart * this.radius,
+			endRHour      = tickEnd * this.radius,
+			endRDefault   = tickEnd * this.radius;
 
-			endRHour      = e * this.radius,
-			endRDefault   = e * this.radius,
-
-			which = 60,
+		let which = 60,
 
 			hoursAndTicks = qid('HoursAndTicks');;
 
+		// m = minute
 		for (let m = 0; m < 1440; m += 15) {
 
 			let className, startR, endR;
@@ -170,7 +176,7 @@ class Clock {
 					break;
 			}
 
-			let q = (m/15) * 3.75,
+			let q = (m/15) * anglePerTick,
 				end = polarToRect(endR, q),
 				start = polarToRect(startR, q),
 				tick = createElement(`<line x1="${start.x}" y1="${start.y}" x2="${end.x}" y2="${end.y}" class="tick ${className}">`, 'svg');
