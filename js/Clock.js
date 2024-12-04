@@ -16,8 +16,8 @@ class Clock {
 	// Time stuff
 
 	now () {
-		var now = new Dative(this.globalVariables.getItem('now') || null);
-			now.setMilliseconds(0);
+		const now = new Dative(this.globalVariables.getItem('now') || null);
+		now.setMilliseconds(0);
 		return new Dative(now);
 	}
 
@@ -27,7 +27,7 @@ class Clock {
 
 	tick () {
 
-		var now = this.globalVariables.getItem('now');
+		let now = this.globalVariables.getItem('now');
 		if (now) {
 			this.setNow(now.addMilliseconds(msAdvance));
 		}
@@ -35,9 +35,10 @@ class Clock {
 		this.showCurrentTime();
 		this.showCurrentDate();
 
-		var refreshSun = this.globalVariables.getItem('refreshSun'),
-			refreshMoon = this.globalVariables.getItem('refreshMoon'),
-			now = new Dative(this.now()).toString('Y-m-d H:i:s');
+		const refreshSun = this.globalVariables.getItem('refreshSun'),
+			refreshMoon = this.globalVariables.getItem('refreshMoon');
+
+		now = new Dative(this.now()).toString('Y-m-d H:i:s');
 
 		if (this.globalVariables.getItem('debug')) {
 			qid('DebugTime').textContent = new Dative(this.now()).toString('j M, H:i:s P');
@@ -61,11 +62,9 @@ class Clock {
 
 	start () {
 
-		var timer;
-
 		this.stop();
 		this.tick();
-		timer = function () {
+		const timer = function () {
 			var clock = new Clock();
 			clock.tick();
 		};
@@ -84,7 +83,7 @@ class Clock {
 	}
 
 	showTime(dateTime) {
-		var angle = Time.asClockAngle(dateTime);
+		const angle = Time.asClockAngle(dateTime);
 		qid('HourHand').setAttribute('transform', `rotate(${angle})`);
 	}
 
@@ -94,10 +93,10 @@ class Clock {
 
 	showCurrentDate() {
 
-		var actualNow = new Dative(),
+		const actualNow = new Dative(),
 			now = new Dative(this.now()),
-			dateComplication = q('#Date'),
-			format = 'D j';
+			dateComplication = q('#Date');
+		let format = 'D j';
 
 		format += (actualNow.toString('Y-m') != now.toString('Y-m')) ? ' M' : '';
 		format += (actualNow.getFullYear()   != now.getFullYear())   ? ' Y' : '';
@@ -117,8 +116,8 @@ class Clock {
 	}
 
 	drawHours () {
-		var r = .87 * this.radius;
-		var hoursAndTicks = qid('HoursAndTicks');
+		const r = .87 * this.radius,
+			hoursAndTicks = qid('HoursAndTicks');
 		for (let h = 0; h < 24; h++) {
 			let q = Time.getQForH(h),
 				point = polarToRect(r, q),
@@ -191,8 +190,14 @@ class Clock {
 	}
 
 	drawHand () {
-		var hand = createElement(`<line x1="0" y1="0" x2="0" y2="${-.94 * this.radius}" id="HourHand" />`, 'svg');
-		this.face.appendChild(hand);
+		this.face.appendChild(
+			createElement(
+				`<line x1="0" y1="0" x2="0" y2="${
+					-0.94 * this.radius
+				}" id="HourHand" />`,
+				'svg'
+			)
+		);
 	}
 
 	static drawLocationSpecificDetails () {
@@ -216,7 +221,7 @@ class Clock {
 
 	static drawArc (start, end, id, accoutrements = false) {
 
-		var clock = new Clock();
+		const clock = new Clock();
 
 		start = new Dative().setTimeComponent(new Dative(start).toString('H:i:s.u'));
 		end = new Dative().setTimeComponent(new Dative(end).toString('H:i:s.u'));
@@ -225,7 +230,7 @@ class Clock {
 			start = start.addDays(-1);
 		}
 
-		var radius = 1 * clock.radius,
+		const radius = 1 * clock.radius,
 			largeArcFlag = ((end - start) > (86400000 / 2)) ? 1 : 0,
 			startPos = polarToRect(radius, Time.asClockAngle(start)),
 			endPos   = polarToRect(radius, Time.asClockAngle(end)),
@@ -242,14 +247,14 @@ class Clock {
 
 	static drawLoadingSpinner () {
 
-		var clock = new Clock();
-		var la = createElement(
+		const clock = new Clock(),
+			la = createElement(
 			`<circle cx="0" cy="0" r="${clock.radius * .70}" id="LoadingIndicator" class="hide"></circle>`, 'svg'
 		);
 		qid('Spinner').appendChild(la);
 
 		setTimeout(function() {
-			var la = qid('LoadingIndicator');
+			const la = qid('LoadingIndicator');
 			if (la) {
 				la.classList.remove('hide');
 			}
@@ -263,7 +268,7 @@ class Clock {
 	}
 
 	static removeLoadingSpinner () {
-		var la = qid('LoadingIndicator');
+		const la = qid('LoadingIndicator');
 		if (la) {
 			la.classList.add('hide');
 		}
@@ -274,7 +279,7 @@ class Clock {
 			document.body.appendChild(createElement('<time id="DebugTime"></time>'));
 		}
 		this.globalVariables.setItem('debug', true);
-		var moonStore = new LocalStorage('MOON');
+		const moonStore = new LocalStorage('MOON');
 		moonStore.clear();
 	}
 
