@@ -89,11 +89,17 @@ text {
 #Face {
 	user-select: none;
 	--foreground-color: black;
+	--background-color: white;
 	fill: none;
 	stroke: var(--foreground-color);
 
+	@media (prefers-color-scheme: dark) {
+		--foreground-color: #84789d;
+		--background-color: #150439;
+	}
+
 	#Disc {
-		fill: white;
+		fill: var(--background-color);
 		stroke: none;
 	}
 
