@@ -1,4 +1,5 @@
 @use "sass:color";
+
 #ClockSVG {
 	overflow: visible;
 
@@ -25,10 +26,35 @@
 
 	#Day {
 		fill: url(#DaylightSky);
+		opacity: 0.9;
+	}
+
+	#DawnAstronomicalTwilight,
+	#DawnNauticalTwilight,
+	#DawnCivilTwilight,
+	#DuskCivilTwilight,
+	#DuskNauticalTwilight,
+	#DuskAstronomicalTwilight {
+		fill: url(#DaylightSky);
+	}
+
+	#DawnCivilTwilight,
+	#DuskCivilTwilight {
+		opacity: 0.8;
+	}
+
+	#DawnNauticalTwilight,
+	#DuskNauticalTwilight {
+		opacity: 0.2;
+	}
+
+	#DawnAstronomicalTwilight,
+	#DuskAstronomicalTwilight {
+		opacity: 0.08;
 	}
 
 	#Night {
-		fill: rgb(33, 33, 33);
+		fill: #1a0053;
 	}
 
 }
@@ -85,6 +111,7 @@ text {
 
 	.tick {
 		stroke: var(--foreground-color);
+
 		&.hour {
 			stroke-width: 3;
 		}
@@ -114,6 +141,7 @@ text {
 	#Moon {
 		cursor: pointer;
 		clip-path: url(#ShadowClip);
+
 		&.daytime-moon {
 			opacity: .3;
 		}
@@ -130,6 +158,7 @@ text {
 	0% {
 		transform: rotate(0);
 	}
+
 	100% {
 		transform: rotate(35deg);
 	}
@@ -139,7 +168,7 @@ text {
 
 	#LoadingIndicator {
 		stroke: #b11313;
-		stroke-dasharray: 0,6.6;
+		stroke-dasharray: 0, 6.6;
 		stroke-width: 2px;
 		stroke-linecap: round;
 		fill: none;
