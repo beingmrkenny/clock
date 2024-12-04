@@ -1,3 +1,4 @@
+@use "sass:color";
 #ClockSVG {
 	overflow: visible;
 
@@ -56,7 +57,7 @@ text {
 }
 
 #Mask {
-	fill: transparentize(white, .85);
+	fill: color.adjust(white, $alpha: -.85);
 }
 
 #Face {

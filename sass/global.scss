@@ -1,3 +1,4 @@
+@use "sass:color";
 body {
 	display: flex;
 	justify-content: center;
@@ -93,7 +94,7 @@ button {
 
 	border: 0;
 	border-radius: 3px;
-	background: transparentize(black, .9);
+	background: color.adjust(black, $alpha: -.9);
 
 	&[data-emoji]::before {
 		margin-right: 10px;
@@ -131,7 +132,7 @@ dialog {
 		border-radius: 20px;
 		color: #333;
 		background: white;
-		box-shadow: 0 0 5px transparentize(black, .3);
+		box-shadow: 0 0 5px color.adjust(black, $alpha: -.3);
 		h2 {
 			margin-top: 0;
 		}
