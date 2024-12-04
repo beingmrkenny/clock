@@ -13,7 +13,7 @@
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"css": "mkdir -p serve && sass sass/init.scss serve/clock.css",
 		"js": "mkdir -p serve && node build/compile.js",
-		"html": "mkdir -p serve && node build/html.js",
+		"html": "mkdir -p serve && cp html/index.html serve/index.html && sed -i '' -e \"s/?refresh=refresh/?refresh=$(date '+%Y%m%d%H%M%S')/g\" serve/index.html;",
 		"serve": "node build/serve.js",
 		"watch": "node build/serve.js && npm-watch"
 	},
