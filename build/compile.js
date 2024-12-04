@@ -34,4 +34,5 @@ exports.compileJS = () => {
 
 }
 
+// TODO change this so it only runs if the script is called from node, not if it's compiled
 exports.compileJS();
