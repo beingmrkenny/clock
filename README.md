@@ -1,8 +1,8 @@
-There should be a symlink in the root directory to the commun package (https://github.com/beingmrkenny.co.uk/commun).
+# Clock
 
 You'll need a Java Runtime (`brew install java`).
 
-Make a symlink to commun (`ln -s ../commun`).
+Make a symlink to commun (https://github.com/beingmrkenny.co.uk/commun) (`ln -s ../commun`).
 
 `npm run css`
 `npm run js`
