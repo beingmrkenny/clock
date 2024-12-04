@@ -1,5 +1,19 @@
-commun
 serve/
-node_modules/
-package-lock.json
+
 *.log
+.sass-cache
+.csscomb.json
+node_modules
+npm-debug.log
+commun
+.zed/
+
+# Mac Specific
+*.scpt
+.DS_Store
+.Spotlight-V100
+.Trashes
+
+# Snet Crap
+.idea/
+*.iml
