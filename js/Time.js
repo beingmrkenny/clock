@@ -25,9 +25,22 @@ class Time {
 		return - (Time.asClockAngle(givenTime) + 90);
 	}
 
-	static getQForH(h) {
-		let n = (h < 12) ? h + 12 : h - 12;
-		return n * 15;
+	static getArrayOfHours(now) {
+		const DSTChangeForToday = new Dative().getDSTChangeForToday(now);
+		let timeOfDSTChange = null;
+		if (DSTChangeForToday != 0) {
+			timeOfDSTChange = Dative.findTimeOfDSTChange(now).format('G');
+		}
+		let arrayOfHours = [];
+		for (let h = 0; h < 24; h++) {
+			if (DSTChangeForToday == 0 || h != timeOfDSTChange) {
+				arrayOfHours.push(h);
+			} else if (DSTChangeForToday > 0 && h == timeOfDSTChange) {
+				arrayOfHours.push(h - (DSTChangeForToday/60));
+				arrayOfHours.push(h);
+			}
+		}
+		return arrayOfHours;
 	}
 
 	/**

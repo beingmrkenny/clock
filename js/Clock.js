@@ -3,8 +3,7 @@
 // Manages data
 
 class Clock {
-
-	constructor () {
+	constructor() {
 		this.svg = qid('ClockSVG');
 		// NOTE: The compiler chokes on this and I don't want to define it all to hell in externs.js
 		this.radius = this.svg.viewBox.baseVal.width / 3;
@@ -15,18 +14,19 @@ class Clock {
 
 	// Time stuff
 
-	now () {
+	now() {
 		const now = new Dative(this.globalVariables.getItem('now') || null);
+		// const now = new Dative('31 march 2024');
+		// const now = new Dative("27 October 2024");
 		now.setMilliseconds(0);
 		return new Dative(now);
 	}
 
-	setNow (datetimeToShow) {
+	setNow(datetimeToShow) {
 		this.globalVariables.setItem('now', new Dative(datetimeToShow));
 	}
 
-	tick () {
-
+	tick() {
 		let now = this.globalVariables.getItem('now');
 		if (now) {
 			this.setNow(now.addMilliseconds(msAdvance));
@@ -41,7 +41,9 @@ class Clock {
 		now = new Dative(this.now()).toString('Y-m-d H:i:s');
 
 		if (this.globalVariables.getItem('debug')) {
-			qid('DebugTime').textContent = new Dative(this.now()).toString('j M, H:i:s P');
+			qid('DebugTime').textContent = new Dative(this.now()).toString(
+				'j M, H:i:s P'
+			);
 		}
 
 		if (now == refreshSun) {
@@ -57,11 +59,9 @@ class Clock {
 		if (qid('MoonlightBar')) {
 			LocationService.execute(SkyEvents.updateMoonlightBar, true);
 		}
-
 	}
 
-	start () {
-
+	start() {
 		this.stop();
 		this.tick();
 		const timer = function () {
@@ -69,15 +69,12 @@ class Clock {
 			clock.tick();
 		};
 
-		this.globalVariables.setItem(
-			'tickTimer',
-			setInterval(timer, msInterval)
-		);
+		this.globalVariables.setItem('tickTimer', setInterval(timer, msInterval));
 
 		qid('HourHand').style.opacity = 1;
 	}
 
-	stop () {
+	stop() {
 		clearInterval(this.globalVariables.getItem('tickTimer'));
 		qid('HourHand').style.opacity = 0.5;
 	}
@@ -92,104 +89,105 @@ class Clock {
 	}
 
 	showCurrentDate() {
-
 		const actualNow = new Dative(),
 			now = new Dative(this.now()),
 			dateComplication = q('#Date');
 		let format = 'D j';
 
-		format += (actualNow.toString('Y-m') != now.toString('Y-m')) ? ' M' : '';
-		format += (actualNow.getFullYear()   != now.getFullYear())   ? ' Y' : '';
+		format += actualNow.toString('Y-m') != now.toString('Y-m') ? ' M' : '';
+		format += actualNow.getFullYear() != now.getFullYear() ? ' Y' : '';
 
 		dateComplication.textContent = now.toString(format);
-
 	}
 
 	// Drawing stuff
 
-	draw () {
-		this.drawHours();
-		this.drawTicks();
+	draw() {
+		const arrayOfHours = Time.getArrayOfHours(this.now()),
+			hoursInADAy = arrayOfHours.length;
+
+		this.drawHours(arrayOfHours, hoursInADAy);
+		this.drawTicks(hoursInADAy);
 		this.drawHand();
 
 		qid('Disc').setAttribute('r', this.radius);
 	}
 
-	drawHours () {
-		const r = .87 * this.radius,
+	drawHours(arrayOfHours, hoursInADay) {
+		const r = 0.87 * this.radius,
+			anglesPerHour = 360 / hoursInADay,
 			hoursAndTicks = qid('HoursAndTicks');
-		for (let h = 0; h < 24; h++) {
-			let q = Time.getQForH(h),
+		for (let i = 0, x = hoursInADay; i < x; i++) {
+			const h = arrayOfHours[i],
+				q = 180 + i * anglesPerHour, //Time.getQForH(h, hoursInADay),
 				point = polarToRect(r, q),
 				hour = createElement(
-				`<text
+					`<text
 					x="${point.x}"
 					y="${point.y}">
 					${h}
-				</text>`, 'svg');
+				</text>`,
+					'svg'
+				);
 			hoursAndTicks.appendChild(hour);
 		}
 	}
 
-	drawTicks () {
-
-		const
-			minutesPerTick = 15,
-			minutesIn24Hours = 1440,
-			numberOfTicks = minutesIn24Hours / minutesPerTick,
+	drawTicks(hoursInADay) {
+		const minutesPerTick = 360 / hoursInADay,
+			minutesInADay = 60 * hoursInADay,
+			numberOfTicks = minutesInADay / minutesPerTick,
 			anglePerTick = 360 / numberOfTicks,
-			tickStart = .955,
-			tickEnd = .985;
+			anglesPerHour = 360 / hoursInADay,
+			tickStart = 0.955,
+			tickEnd = 0.985;
 
-		const
-			startRHour    = tickStart * this.radius,
-			startRHalf    = tickStart * this.radius,
+		const startRHour = tickStart * this.radius,
+			startRHalf = tickStart * this.radius,
 			startRQuarter = tickStart * this.radius,
-			endRHour      = tickEnd * this.radius,
-			endRDefault   = tickEnd * this.radius;
+			endRHour = tickEnd * this.radius,
+			endRDefault = tickEnd * this.radius;
 
 		let which = 60,
-
-			hoursAndTicks = qid('HoursAndTicks');;
+			hoursAndTicks = qid('HoursAndTicks');
 
 		// m = minute
-		for (let m = 0; m < 1440; m += 15) {
-
+		for (let m = 0; m < minutesInADay; m += 15) {
 			let className, startR, endR;
-			switch(which) {
-				case 60 :
+			switch (which) {
+				case 60:
 					className = 'hour';
 					startR = startRHour;
 					endR = endRHour;
 					break;
-				case 15 :
-				case 45 :
+				case 15:
+				case 45:
 					className = 'quarter';
 					startR = startRQuarter;
 					endR = endRDefault;
 					break;
-				case 30 :
+				case 30:
 					className = 'half';
 					startR = startRHalf;
 					endR = endRDefault;
 					break;
 			}
 
-			let q = (m/15) * anglePerTick,
+			let q = 180 + (m / anglesPerHour) * anglePerTick,
 				end = polarToRect(endR, q),
 				start = polarToRect(startR, q),
-				tick = createElement(`<line x1="${start.x}" y1="${start.y}" x2="${end.x}" y2="${end.y}" class="tick ${className}">`, 'svg');
+				tick = createElement(
+					`<line x1="${start.x}" y1="${start.y}" x2="${end.x}" y2="${end.y}" class="tick ${className}">`,
+					'svg'
+				);
 
 			hoursAndTicks.appendChild(tick);
 
-			which = (which == 60)
-				? 15
-				: which + 15;
+			which = which == 60 ? 15 : which + 15;
 		}
-
 	}
 
-	drawHand () {
+	drawHand() {
 		this.face.appendChild(
 			createElement(
 				`<line x1="0" y1="0" x2="0" y2="${
@@ -200,7 +198,7 @@ class Clock {
 		);
 	}
 
-	static drawLocationSpecificDetails () {
+	static drawLocationSpecificDetails() {
 		let clock = new Clock();
 		SkyEvents.drawDaylightHours();
 		SkyEvents.placeSun();
@@ -210,20 +208,21 @@ class Clock {
 		SkyEvents.changeMoonPhase();
 		qid('MoonlightHours').classList.toggle(
 			'transparent',
-			!(clock.data.getItem('moonlightVisible'))
+			!clock.data.getItem('moonlightVisible')
 		);
 		// DEBUG: debuggery
 		console.log(
 			'Clock.drawLocationSpecificDetails called ' +
-			new Dative().toString('Y-m-d H:i:s')
+				new Dative().toString('Y-m-d H:i:s')
 		);
 	}
 
-	static drawArc (start, end, id, accoutrements = false) {
-
+	static drawArc(start, end, id, accoutrements = false) {
 		const clock = new Clock();
 
-		start = new Dative().setTimeComponent(new Dative(start).toString('H:i:s.u'));
+		start = new Dative().setTimeComponent(
+			new Dative(start).toString('H:i:s.u')
+		);
 		end = new Dative().setTimeComponent(new Dative(end).toString('H:i:s.u'));
 
 		if (start > end) {
@@ -231,9 +230,9 @@ class Clock {
 		}
 
 		const radius = 1 * clock.radius,
-			largeArcFlag = ((end - start) > (86400000 / 2)) ? 1 : 0,
+			largeArcFlag = end - start > 86400000 / 2 ? 1 : 0,
 			startPos = polarToRect(radius, Time.asClockAngle(start)),
-			endPos   = polarToRect(radius, Time.asClockAngle(end)),
+			endPos = polarToRect(radius, Time.asClockAngle(end)),
 			path = `M ${startPos.x},${startPos.y} A ${radius},${radius} 0 ${largeArcFlag} 1 ${endPos.x},${endPos.y}`,
 			arc = createElement(`<path d="${path}" id="${id}Arc">`, 'svg');
 
@@ -242,39 +241,43 @@ class Clock {
 		} else {
 			clock.face.appendChild(arc);
 		}
-
 	}
 
-	static drawLoadingSpinner () {
-
+	static drawLoadingSpinner() {
 		const clock = new Clock(),
 			la = createElement(
-			`<circle cx="0" cy="0" r="${clock.radius * .70}" id="LoadingIndicator" class="hide"></circle>`, 'svg'
-		);
+				`<circle cx="0" cy="0" r="${
+					clock.radius * 0.7
+				}" id="LoadingIndicator" class="hide"></circle>`,
+				'svg'
+			);
 		qid('Spinner').appendChild(la);
 
-		setTimeout(function() {
+		setTimeout(function () {
 			const la = qid('LoadingIndicator');
 			if (la) {
 				la.classList.remove('hide');
 			}
-			la.addEventListener('transitionend', function (la) {
-				if (la && la.classList && la.classList.contains('hide')) {
-					la.remove();
-				}
-			}, la);
+			la.addEventListener(
+				'transitionend',
+				function (la) {
+					if (la && la.classList && la.classList.contains('hide')) {
+						la.remove();
+					}
+				},
+				la
+			);
 		}, 0);
-
 	}
 
-	static removeLoadingSpinner () {
+	static removeLoadingSpinner() {
 		const la = qid('LoadingIndicator');
 		if (la) {
 			la.classList.add('hide');
 		}
 	}
 
-	debug () {
+	debug() {
 		if (!qid('DebugTime')) {
 			document.body.appendChild(createElement('<time id="DebugTime"></time>'));
 		}
@@ -282,5 +285,4 @@ class Clock {
 		const moonStore = new LocalStorage('MOON');
 		moonStore.clear();
 	}
-
 }
