@@ -17,8 +17,8 @@ class Clock {
 	now() {
 		// const now = new Dative(this.globalVariables.getItem('now') || null);
 		// const now = new Dative('31 march 2024'); // spring forward
-		const now = new Dative("27 October 2024"); // fall back
-		// const now = new Dative("3 august 2024"); // summer (DST)
+		// const now = new Dative("27 October 2024"); // fall back
+		const now = new Dative("3 august 2024"); // summer (DST)
 		// const now = new Dative("3 november 2024"); // winter (no DST)
 		now.setMilliseconds(0);
 		return new Dative(now);
@@ -26,6 +26,10 @@ class Clock {
 
 	setNow(datetimeToShow) {
 		this.globalVariables.setItem('now', new Dative(datetimeToShow));
+	}
+
+	isDST() {
+		return new Dative(this.now()).isDST();
 	}
 
 	tick() {
@@ -117,6 +121,10 @@ class Clock {
 		this.drawHours(arrayOfHours, hoursInADAy);
 		this.drawTicks(hoursInADAy);
 		this.drawHand();
+
+		qq('#DaylightHoursSVG, #CelestialBodies').forEach(
+			(element) => element.classList.toggle('dst-rotated', this.isDST())
+		);
 
 		qid('Disc').setAttribute('r', this.radius);
 	}

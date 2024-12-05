@@ -9,6 +9,10 @@
 	position: absolute;
 }
 
+.dst-rotated {
+	transform: rotate(-15deg);
+}
+
 #DaylightHoursSVG {
 	overflow: visible;
 
