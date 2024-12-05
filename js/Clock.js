@@ -15,9 +15,11 @@ class Clock {
 	// Time stuff
 
 	now() {
-		const now = new Dative(this.globalVariables.getItem('now') || null);
-		// const now = new Dative('31 march 2024');
-		// const now = new Dative("27 October 2024");
+		// const now = new Dative(this.globalVariables.getItem('now') || null);
+		// const now = new Dative('31 march 2024'); // spring forward
+		const now = new Dative("27 October 2024"); // fall back
+		// const now = new Dative("3 august 2024"); // summer (DST)
+		// const now = new Dative("3 november 2024"); // winter (no DST)
 		now.setMilliseconds(0);
 		return new Dative(now);
 	}
@@ -44,6 +46,12 @@ class Clock {
 			qid('DebugTime').textContent = new Dative(this.now()).toString(
 				'j M, H:i:s P'
 			);
+		}
+
+		// redraw this piece every midnight
+		if (now.endsWith("00:00:00")) {
+			this.undraw();
+			this.draw();
 		}
 
 		if (now == refreshSun) {
@@ -113,13 +121,22 @@ class Clock {
 		qid('Disc').setAttribute('r', this.radius);
 	}
 
+	undraw() {
+		const hoursAndTicks = qid('HoursAndTicks');
+		while (hoursAndTicks.firstChild) {
+			hoursAndTicks.removeChild(hoursAndTicks.lastChild);
+		}
+		qid('HourHand').remove();
+	}
+
 	drawHours(arrayOfHours, hoursInADay) {
 		const r = 0.87 * this.radius,
 			anglesPerHour = 360 / hoursInADay,
-			hoursAndTicks = qid('HoursAndTicks');
+			hoursAndTicks = qid('HoursAndTicks'),
+			offset = (this.isDST()) ? 0 - anglesPerHour : 0; // TODO what to do on clock change days?
 		for (let i = 0, x = hoursInADay; i < x; i++) {
 			const h = arrayOfHours[i],
-				q = 180 + i * anglesPerHour, //Time.getQForH(h, hoursInADay),
+				q = 180 + offset + i * anglesPerHour,
 				point = polarToRect(r, q),
 				hour = createElement(
 					`<text
