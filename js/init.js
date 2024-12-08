@@ -1,4 +1,7 @@
-const dateTimeDebug = false; // full date time
+const dateTimeDebug = '31 march 2024 00:15'; // full date time
+// const dateTimeDebug = '27 October 2024 00:00'; // full date time
+// const dateTimeDebug = '3 august 2024 00:00'; // full date time
+// const dateTimeDebug = '3 november 2024 00:00'; // full date time
 const timeDebug = false; // use today, but change the time
 const msAdvance = 1000; // each tick advances the time by this much
 const msInterval = 1000; // how often should each tick happen
@@ -6,8 +9,6 @@ const msInterval = 1000; // how often should each tick happen
 document.addEventListener('DOMContentLoaded', function () {
 
 	var clock = new Clock();
-
-	clock.draw();
 
 	if (dateTimeDebug) {
 		clock.setNow(dateTimeDebug);
@@ -19,6 +20,8 @@ document.addEventListener('DOMContentLoaded', function () {
 		clock.setNow(now);
 		clock.debug();
 	}
+
+	clock.draw();
 
 	clock.start();
 

@@ -15,11 +15,7 @@ class Clock {
 	// Time stuff
 
 	now() {
-		// const now = new Dative(this.globalVariables.getItem('now') || null);
-		// const now = new Dative('31 march 2024'); // spring forward
-		// const now = new Dative("27 October 2024"); // fall back
-		const now = new Dative("3 august 2024"); // summer (DST)
-		// const now = new Dative("3 november 2024"); // winter (no DST)
+		const now = new Dative(this.globalVariables.getItem('now') || null);
 		now.setMilliseconds(0);
 		return new Dative(now);
 	}
@@ -117,6 +113,8 @@ class Clock {
 	draw() {
 		const arrayOfHours = Time.getArrayOfHours(this.now()),
 			hoursInADAy = arrayOfHours.length;
+
+			console.log(arrayOfHours);
 
 		this.drawHours(arrayOfHours, hoursInADAy);
 		this.drawTicks(hoursInADAy);
