@@ -24,18 +24,13 @@ class Clock {
 		this.globalVariables.setItem('now', new Dative(datetimeToShow));
 	}
 
-	isDST() {
-		return new Dative(this.now()).isDST();
-	}
-
 	tick() {
 		let now = this.globalVariables.getItem('now');
 		if (now) {
 			this.setNow(now.addMilliseconds(msAdvance));
 		}
 
-		this.showCurrentTime();
-		this.showCurrentDate();
+		this.showTime(this.now());
 
 		const refreshSun = this.globalVariables.getItem('refreshSun'),
 			refreshMoon = this.globalVariables.getItem('refreshMoon');
@@ -48,8 +43,8 @@ class Clock {
 			);
 		}
 
-		// redraw this piece every midnight
 		if (now.endsWith("00:00:00")) {
+			this.showCurrentDate();
 			this.undraw();
 			this.draw();
 		}
@@ -92,10 +87,6 @@ class Clock {
 		qid('HourHand').setAttribute('transform', `rotate(${angle})`);
 	}
 
-	showCurrentTime() {
-		this.showTime(this.now());
-	}
-
 	showCurrentDate() {
 		const actualNow = new Dative(),
 			now = new Dative(this.now()),
@@ -114,14 +105,16 @@ class Clock {
 		const arrayOfHours = Time.getArrayOfHours(this.now()),
 			hoursInADAy = arrayOfHours.length;
 
-			console.log(arrayOfHours);
+		this.globalVariables.setItem('hoursInADay', hoursInADAy);
+		this.globalVariables.setItem('msInADay', hoursInADAy * 60 * 60 * 1000);
 
 		this.drawHours(arrayOfHours, hoursInADAy);
 		this.drawTicks(hoursInADAy);
 		this.drawHand();
+		this.showCurrentDate();
 
-		qq('#DaylightHoursSVG, #CelestialBodies').forEach(
-			(element) => element.classList.toggle('dst-rotated', this.isDST())
+		qq('#DaylightHoursSVG, #CelestialBodies').forEach((element) =>
+			element.classList.toggle('dst-rotated', new Dative(this.now()).isDST())
 		);
 
 		qid('Disc').setAttribute('r', this.radius);
@@ -232,11 +225,6 @@ class Clock {
 		qid('MoonlightHours').classList.toggle(
 			'transparent',
 			!clock.data.getItem('moonlightVisible')
-		);
-		// DEBUG: debuggery
-		console.log(
-			'Clock.drawLocationSpecificDetails called ' +
-				new Dative().toString('Y-m-d H:i:s')
 		);
 	}
 

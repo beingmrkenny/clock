@@ -515,7 +515,7 @@ class SkyEvents {
 	}
 
 	static changeMoonPhase() {
-		// TODO update angle
+		// TODO update angle of rotation in the sky
 
 		const moon = qid('Moon'),
 			w = parseFloat(moon.getAttribute('width')),

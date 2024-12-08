@@ -1,7 +1,12 @@
-const dateTimeDebug = '31 march 2024 00:15'; // full date time
-// const dateTimeDebug = '27 October 2024 00:00'; // full date time
-// const dateTimeDebug = '3 august 2024 00:00'; // full date time
-// const dateTimeDebug = '3 november 2024 00:00'; // full date time
+// const dateTimeDebug = false; // full date time
+
+const dateTimeDebug = '31 march 2024 00:15'; // spring forward
+// const dateTimeDebug = '1 april 2024 00:15'; // spring forward + 1
+// const dateTimeDebug = '27 October 2024 00:00'; // fall back
+// const dateTimeDebug = '28 October 2024 00:00'; // fall back + 1
+// const dateTimeDebug = '3 august 2024 00:00'; // summer (DST)
+// const dateTimeDebug = '3 november 2024 00:00'; // winter (no DST)
+
 const timeDebug = false; // use today, but change the time
 const msAdvance = 1000; // each tick advances the time by this much
 const msInterval = 1000; // how often should each tick happen
