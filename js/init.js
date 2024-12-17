@@ -1,9 +1,21 @@
 // const dateTimeDebug = false; // full date time
 
-const dateTimeDebug = '31 march 2024 00:15'; // spring forward
+// const dateTimeDebug = '28 march 2024 00:15'; // spring forward - 3
+// const dateTimeDebug = '29 march 2024 00:15'; // spring forward - 2
+// const dateTimeDebug = '30 march 2024 00:15'; // spring forward - 1
+// const dateTimeDebug = '31 march 2024 00:15'; // spring forward
 // const dateTimeDebug = '1 april 2024 00:15'; // spring forward + 1
-// const dateTimeDebug = '27 October 2024 00:00'; // fall back
-// const dateTimeDebug = '28 October 2024 00:00'; // fall back + 1
+// const dateTimeDebug = '2 april 2024 00:15'; // spring forward + 2
+const dateTimeDebug = '3 april 2024 00:15'; // spring forward + 3
+
+// const dateTimeDebug = '24 October 2024 00:15'; // fall back -3
+// const dateTimeDebug = '25 October 2024 00:15'; // fall back -2
+// const dateTimeDebug = '26 October 2024 00:15'; // fall back -1
+// const dateTimeDebug = '27 October 2024 00:15'; // fall back
+// const dateTimeDebug = '28 October 2024 00:15'; // fall back + 1
+// const dateTimeDebug = '29 October 2024 00:15'; // fall back + 2
+// const dateTimeDebug = '30 October 2024 00:15'; // fall back + 3
+
 // const dateTimeDebug = '3 august 2024 00:00'; // summer (DST)
 // const dateTimeDebug = '3 november 2024 00:00'; // winter (no DST)
 
