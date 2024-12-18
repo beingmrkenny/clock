@@ -132,10 +132,17 @@ class Clock {
 		const r = 0.87 * this.radius,
 			anglesPerHour = 360 / hoursInADay,
 			hoursAndTicks = qid('HoursAndTicks'),
-			offset = (this.isDST()) ? 0 - anglesPerHour : 0; // TODO what to do on clock change days?
+			now = new Dative(this.now()),
+			timezoneOffsetDifferenceBetweenAMAndPM = now.getTimezoneOffsetDifferenceBetweenAMAndPM();
+
+		let offset = 0;
+		if (timezoneOffsetDifferenceBetweenAMAndPM == 0 && now.isDST()) {
+			offset = anglesPerHour;
+		}
+
 		for (let i = 0, x = hoursInADay; i < x; i++) {
 			const h = arrayOfHours[i],
-				q = 180 + offset + i * anglesPerHour,
+				q = 180 - offset + i * anglesPerHour,
 				point = polarToRect(r, q),
 				hour = createElement(
 					`<text
