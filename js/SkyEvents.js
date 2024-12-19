@@ -15,17 +15,17 @@ class SkyEvents {
 			];
 
 			this.sun = {
-				yesterday: SunCalc.getTimes(
+				yesterday: SunCalc.getSunTimes(
 					times[0],
 					this.location.latitude,
 					this.location.longitude
 				),
-				today: SunCalc.getTimes(
+				today: SunCalc.getSunTimes(
 					times[1],
 					this.location.latitude,
 					this.location.longitude
 				),
-				tomorrow: SunCalc.getTimes(
+				tomorrow: SunCalc.getSunTimes(
 					times[2],
 					this.location.latitude,
 					this.location.longitude
@@ -35,7 +35,7 @@ class SkyEvents {
 			for (const day in this.sun) {
 				for (const eventName in this.sun[day]) {
 					this.sun[day][eventName] = new Date(
-						this.sun[day][eventName].setMilliseconds(0)
+						this.sun[day][eventName].value
 					);
 				}
 			}
@@ -44,7 +44,7 @@ class SkyEvents {
 
 	sunIsUp() {
 		return (
-			this.now >= this.sun.today.sunrise && this.now < this.sun.today.sunset
+			this.now >= this.sun.today.sunriseEnd && this.now < this.sun.today.sunsetStart
 		);
 	}
 
@@ -56,8 +56,8 @@ class SkyEvents {
 		// QUESTION refer to midnight?
 		return (
 			!this.sunIsUp() &&
-			this.now >= this.sun.today.sunset &&
-			this.now < this.sun.tomorrow.sunrise
+			this.now >= this.sun.today.sunsetStart &&
+			this.now < this.sun.tomorrow.sunriseEnd
 		);
 	}
 
@@ -65,8 +65,8 @@ class SkyEvents {
 		// QUESTION refer to midnight?
 		return (
 			!this.sunIsUp() &&
-			this.now > this.sun.yesterday.sunset &&
-			this.now < this.sun.today.sunrise
+			this.now > this.sun.yesterday.sunsetStart &&
+			this.now < this.sun.today.sunriseEnd
 		);
 	}
 
@@ -84,35 +84,35 @@ class SkyEvents {
 			refresh;
 
 		if (this.sunIsUp()) {
-			astroDawn = this.sun.today.nightEnd;
+			astroDawn = this.sun.today.astronomicalDawn;
 			nauticalDawn = this.sun.today.nauticalDawn;
-			civilDawn = this.sun.today.dawn;
-			sunrise = this.sun.today.sunrise;
-			sunset = this.sun.today.sunset;
-			civilDusk = this.sun.today.sunset;
-			nauticalDusk = this.sun.today.dusk;
+			civilDawn = this.sun.today.civilDawn;
+			sunrise = this.sun.today.sunriseEnd;
+			sunset = this.sun.today.sunsetStart;
+			civilDusk = this.sun.today.sunsetStart;
+			nauticalDusk = this.sun.today.civilDusk;
 			astroDusk = this.sun.today.nauticalDusk;
-			night = this.sun.today.night;
+			night = this.sun.today.astronomicalDusk;
 		} else if (this.sunIsDownPM()) {
-			astroDawn = this.sun.tomorrow.nightEnd;
+			astroDawn = this.sun.tomorrow.astronomicalDawn;
 			nauticalDawn = this.sun.tomorrow.nauticalDawn;
-			civilDawn = this.sun.tomorrow.dawn;
-			sunrise = this.sun.tomorrow.sunrise;
-			sunset = this.sun.today.sunset;
-			civilDusk = this.sun.today.sunset;
-			nauticalDusk = this.sun.today.dusk;
+			civilDawn = this.sun.tomorrow.civilDawn;
+			sunrise = this.sun.tomorrow.sunriseEnd;
+			sunset = this.sun.today.sunsetStart;
+			civilDusk = this.sun.today.sunsetStart;
+			nauticalDusk = this.sun.today.civilDusk;
 			astroDusk = this.sun.today.nauticalDusk;
-			night = this.sun.today.night;
+			night = this.sun.today.astronomicalDusk;
 		} else if (this.sunIsDownAM()) {
-			astroDawn = this.sun.today.nightEnd;
+			astroDawn = this.sun.today.astronomicalDawn;
 			nauticalDawn = this.sun.today.nauticalDawn;
-			civilDawn = this.sun.today.dawn;
-			sunrise = this.sun.today.sunrise;
-			sunset = this.sun.yesterday.sunset;
-			civilDusk = this.sun.yesterday.sunset;
-			nauticalDusk = this.sun.yesterday.dusk;
+			civilDawn = this.sun.today.civilDawn;
+			sunrise = this.sun.today.sunriseEnd;
+			sunset = this.sun.yesterday.sunsetStart;
+			civilDusk = this.sun.yesterday.sunsetStart;
+			nauticalDusk = this.sun.yesterday.civilDusk;
 			astroDusk = this.sun.yesterday.nauticalDusk;
-			night = this.sun.yesterday.night;
+			night = this.sun.yesterday.astronomicalDusk;
 		}
 
 		if (sunset <= this.now && sunrise > this.now) {
@@ -160,7 +160,8 @@ class SkyEvents {
 				SunCalc.getMoonTimes(
 					times[0],
 					this.location.latitude,
-					this.location.longitude
+					this.location.longitude,
+					true
 				),
 				SunCalc.getMoonTimes(
 					times[1],
@@ -210,10 +211,13 @@ class SkyEvents {
 					moon.set = moonEvents[i].time;
 
 					// for sorting
-					moon.time = Math.min(
-						Math.abs(this.now - moon.rise.valueOf()),
-						Math.abs(this.now - moon.set.valueOf())
-					);
+					// FIXME this is possibly brock
+					moon.time = moon.rise
+						? Math.min(
+								Math.abs(this.now - moon.rise.valueOf()),
+								Math.abs(this.now - moon.set.valueOf())
+						  )
+						: Math.abs(this.now - moon.set.valueOf());
 
 					moon.refresh = null;
 
@@ -256,8 +260,8 @@ class SkyEvents {
 		guessMoonNoon.addMilliseconds((moonTimes.set - moonTimes.rise) / 2);
 		guessMoonNoonPosition = SunCalc.getMoonPosition(
 			guessMoonNoon,
-			location.latitude,
-			location.longitude
+			this.location.latitude,
+			this.location.longitude
 		);
 		lastHighestAltitude = guessMoonNoonPosition.altitude;
 
@@ -266,8 +270,8 @@ class SkyEvents {
 		moonNoon.addMilliseconds(60000);
 		moonNoonPosition = SunCalc.getMoonPosition(
 			moonNoon,
-			location.latitude,
-			location.longitude
+			this.location.latitude,
+			this.location.longitude
 		);
 		moonNoon.addMilliseconds(-60000);
 		direction = moonNoonPosition.altitude > lastHighestAltitude ? 1 : -1;
@@ -276,8 +280,8 @@ class SkyEvents {
 		moonNoon.addMilliseconds(direction * 60000);
 		moonNoonPosition = SunCalc.getMoonPosition(
 			moonNoon,
-			location.latitude,
-			location.longitude
+			this.location.latitude,
+			this.location.longitude
 		);
 
 		// Find the highest altitude
@@ -285,8 +289,8 @@ class SkyEvents {
 			moonNoon.addMilliseconds(direction * 60000);
 			moonNoonPosition = SunCalc.getMoonPosition(
 				moonNoon,
-				location.latitude,
-				location.longitude
+				this.location.latitude,
+				this.location.longitude
 			);
 			lastHighestAltitude = moonNoonPosition.altitude;
 		}
@@ -358,6 +362,8 @@ class SkyEvents {
 		const daylightHours = qid('DaylightHours'),
 			skyEvents = new SkyEvents(),
 			sun = skyEvents.getCurrentSun();
+
+			console.log(sun);
 
 		const phases = {
 			astroDawn: {
@@ -528,7 +534,7 @@ class SkyEvents {
 			currentMoon = skyEvents.getCurrentMoon(),
 			moonNoon = new Dative(currentMoon.noon),
 			illumination = SunCalc.getMoonIllumination(new Dative(currentMoon.noon));
-		let phase = illumination.phase >= 1 ? 0 : illumination.phase,
+		let phase = illumination.phaseValue >= 1 ? 0 : illumination.phaseValue,
 			d;
 
 		phase = phase >= 1 ? 0 : phase;

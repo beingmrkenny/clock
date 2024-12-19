@@ -3,10 +3,10 @@
 // const dateTimeDebug = '28 march 2024 00:15'; // spring forward - 3
 // const dateTimeDebug = '29 march 2024 00:15'; // spring forward - 2
 // const dateTimeDebug = '30 march 2024 00:15'; // spring forward - 1
-// const dateTimeDebug = '31 march 2024 00:15'; // spring forward
+const dateTimeDebug = '31 march 2024 00:15'; // spring forward
 // const dateTimeDebug = '1 april 2024 00:15'; // spring forward + 1
 // const dateTimeDebug = '2 april 2024 00:15'; // spring forward + 2
-const dateTimeDebug = '3 april 2024 00:15'; // spring forward + 3
+// const dateTimeDebug = '3 april 2024 00:15'; // spring forward + 3
 
 // const dateTimeDebug = '24 October 2024 00:15'; // fall back -3
 // const dateTimeDebug = '25 October 2024 00:15'; // fall back -2
