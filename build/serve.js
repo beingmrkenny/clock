@@ -8,7 +8,7 @@ fs.copySync('assets/favicon.ico', 'serve/favicon.ico');
 fs.copySync('assets/favicon.png', 'serve/favicon.png');
 fs.copySync('assets/moon.png', 'serve/moon.png');
 
-// compileJS();
+// compileJS(); // FIXME does this need to be called?
 exec('echo hello');
 exec('cp html/index.html serve/index.html && sed -i \'\' -e \"s/?refresh=refresh/?refresh=$(date \'+%Y%m%d%H%M%S\')/g\" serve/index.html');
 exec('sass sass/init.scss serve/clock.css');

@@ -15,7 +15,9 @@
 		"js": "mkdir -p serve && node build/compile.js",
 		"html": "mkdir -p serve && cp html/index.html serve/index.html && sed -i '' -e \"s/?refresh=refresh/?refresh=$(date '+%Y%m%d%H%M%S')/g\" serve/index.html;",
 		"serve": "node build/serve.js",
-		"watch": "node build/serve.js && npm-watch"
+		"watch": "node build/serve.js && npm-watch",
+		"safari": "open serve/index.html",
+		"firefox": "open -a Firefox.app serve/index.html"
 	},
 	"watch": {
 		"css": {
