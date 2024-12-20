@@ -1,6 +1,5 @@
 class Dialog {
-
-	constructor (header, content, action) {
+	constructor(header, content, action) {
 		var self = this;
 
 		self.id = header.replace(/ /g, '');
@@ -9,12 +8,9 @@ class Dialog {
 		clock.globalVariables.setItem('dialogAction', action);
 
 		if (arguments.length === 1) {
-
 			self.dialog = qid(self.id);
-
 		} else {
-
-			let contentString = (typeof content == 'string') ? `<p>${content}</p>` : '';
+			let contentString = typeof content == 'string' ? `<p>${content}</p>` : '';
 
 			self.dialog = createElement(`
 				<dialog open id="${self.id}">
@@ -41,20 +37,18 @@ class Dialog {
 
 			document.body.appendChild(self.dialog);
 		}
-
 	}
 
-	static reset () {
+	static reset() {
 		Mousetrap.unbind(['enter', 'esc']);
 		q('dialog').remove();
 	}
 
-	static submit () {
+	static submit() {
 		var clock = new Clock();
 		var action = clock.globalVariables.getItem('dialogAction');
 		action();
 		clock.globalVariables.delete('dialogAction');
 		Dialog.reset();
 	}
-
 }
