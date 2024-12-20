@@ -46,6 +46,10 @@ class Clock {
 			SkyEvents.drawDaylightHours();
 			SkyEvents.placeMoon();
 			SkyEvents.drawMoonlightArc();
+			qid('Face').classList.toggle(
+				'dst-rotated',
+				this.now().getTimezoneOffsetDifferenceBetweenAMAndPM != 0
+			);
 		}
 
 		// what is this plops?
@@ -101,6 +105,10 @@ class Clock {
 		this.drawHand();
 
 		qid('Disc').setAttribute('r', this.radius);
+		qid('Face').classList.toggle(
+			'dst-rotated',
+			this.now().getTimezoneOffsetDifferenceBetweenAMAndPM != 0
+		);
 	}
 
 	drawHours() {

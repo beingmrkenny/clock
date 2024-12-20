@@ -93,6 +93,12 @@ text {
 	fill: none;
 	stroke: var(--foreground-color);
 
+	transition: transform .5s cubic-bezier(0.83, 0, 0.17, 1);
+
+	&.dst-rotated {
+		transform: rotate(-15deg);
+	}
+
 	@media (prefers-color-scheme: dark) {
 		--foreground-color: #84789d;
 		--background-color: #150439;
@@ -131,6 +137,14 @@ text {
 		fill: var(--foreground-color);
 	}
 
+	#Date {
+		font-size: 13px;
+		font-weight: lighter;
+		text-transform: uppercase;
+	}
+}
+
+#CelestialBodies {
 	#Sun {
 		stroke: none;
 		fill: url(#SunGradient);
@@ -151,12 +165,6 @@ text {
 		&.daytime-moon {
 			opacity: .3;
 		}
-	}
-
-	#Date {
-		font-size: 13px;
-		font-weight: lighter;
-		text-transform: uppercase;
 	}
 }
 
