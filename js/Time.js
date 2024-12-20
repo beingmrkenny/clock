@@ -7,14 +7,9 @@ class Time {
 		return 180 + asDecimalThroughDay * 360;
 	}
 
-	static asClockAnglePolar(givenTime) {
-		return -(Time.asClockAngle(givenTime) + 90);
-	}
-
-	static getQForH(h) {
-		let n = h < 12 ? h + 12 : h - 12;
-		return n * 15;
-	}
+	// static asClockAnglePolar(givenTime) {
+	// 	return -(Time.asClockAngle(givenTime) + 90);
+	// }
 
 	/**
 	 * Sorts an array of objects which have a time property.

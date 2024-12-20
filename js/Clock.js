@@ -112,7 +112,8 @@ class Clock {
 		const r = 0.87 * this.radius,
 			hoursAndTicks = qid('HoursAndTicks');
 		for (let h = 0; h < 24; h++) {
-			let q = Time.getQForH(h),
+			let n = h < 12 ? h + 12 : h - 12;
+			let q = n * 15,
 				point = polarToRect(r, q),
 				hour = createElement(
 					`<text
