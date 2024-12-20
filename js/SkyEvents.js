@@ -8,121 +8,28 @@ class SkyEvents {
 		this.location = clock.data.getItem('location');
 
 		if (this.location) {
-			const times = [
-				new Dative(this.now).addDays(-1),
+			this.sun = SunCalc.getSunTimes(
 				new Dative(this.now),
-				new Dative(this.now).addDays(1),
-			];
+				this.location.latitude,
+				this.location.longitude
+			);
 
-			this.sun = {
-				yesterday: SunCalc.getSunTimes(
-					times[0],
-					this.location.latitude,
-					this.location.longitude
-				),
-				today: SunCalc.getSunTimes(
-					times[1],
-					this.location.latitude,
-					this.location.longitude
-				),
-				tomorrow: SunCalc.getSunTimes(
-					times[2],
-					this.location.latitude,
-					this.location.longitude
-				),
-			};
-
-			for (const day in this.sun) {
-				for (const eventName in this.sun[day]) {
-					this.sun[day][eventName] = new Date(this.sun[day][eventName].value);
-				}
+			for (const eventName in this.sun) {
+				this.sun[eventName] = new Date(this.sun[eventName].value);
 			}
 		}
 	}
 
-	sunIsUp() {
-		return (
-			this.now >= this.sun.today.sunriseEnd &&
-			this.now < this.sun.today.sunsetStart
-		);
-	}
-
-	sunIsDown() {
-		return this.sunIsDownPM() || this.sunIsDownAm();
-	}
-
-	sunIsDownPM() {
-		// QUESTION refer to midnight?
-		return (
-			!this.sunIsUp() &&
-			this.now >= this.sun.today.sunsetStart &&
-			this.now < this.sun.tomorrow.sunriseEnd
-		);
-	}
-
-	sunIsDownAM() {
-		// QUESTION refer to midnight?
-		return (
-			!this.sunIsUp() &&
-			this.now > this.sun.yesterday.sunsetStart &&
-			this.now < this.sun.today.sunriseEnd
-		);
-	}
-
 	getCurrentSun() {
-		const clock = new Clock();
-		let astroDawn,
-			nauticalDawn,
-			civilDawn,
-			sunrise,
-			sunset,
-			civilDusk,
-			nauticalDusk,
-			astroDusk,
-			night,
-			refresh;
-
-		if (this.sunIsUp()) {
-			astroDawn = this.sun.today.astronomicalDawn;
-			nauticalDawn = this.sun.today.nauticalDawn;
-			civilDawn = this.sun.today.civilDawn;
-			sunrise = this.sun.today.sunriseEnd;
-			sunset = this.sun.today.sunsetStart;
-			civilDusk = this.sun.today.sunsetStart;
-			nauticalDusk = this.sun.today.civilDusk;
-			astroDusk = this.sun.today.nauticalDusk;
-			night = this.sun.today.astronomicalDusk;
-		} else if (this.sunIsDownPM()) {
-			astroDawn = this.sun.tomorrow.astronomicalDawn;
-			nauticalDawn = this.sun.tomorrow.nauticalDawn;
-			civilDawn = this.sun.tomorrow.civilDawn;
-			sunrise = this.sun.tomorrow.sunriseEnd;
-			sunset = this.sun.today.sunsetStart;
-			civilDusk = this.sun.today.sunsetStart;
-			nauticalDusk = this.sun.today.civilDusk;
-			astroDusk = this.sun.today.nauticalDusk;
-			night = this.sun.today.astronomicalDusk;
-		} else if (this.sunIsDownAM()) {
-			astroDawn = this.sun.today.astronomicalDawn;
-			nauticalDawn = this.sun.today.nauticalDawn;
-			civilDawn = this.sun.today.civilDawn;
-			sunrise = this.sun.today.sunriseEnd;
-			sunset = this.sun.yesterday.sunsetStart;
-			civilDusk = this.sun.yesterday.sunsetStart;
-			nauticalDusk = this.sun.yesterday.civilDusk;
-			astroDusk = this.sun.yesterday.nauticalDusk;
-			night = this.sun.yesterday.astronomicalDusk;
-		}
-
-		if (sunset <= this.now && sunrise > this.now) {
-			refresh = sunrise;
-		} else if (sunrise <= this.now && sunset > this.now) {
-			refresh = sunset;
-		}
-		clock.globalVariables.setItem(
-			'refreshSun',
-			new Dative(refresh).toString('Y-m-d H:i:s')
-		);
+		const astroDawn = this.sun.astronomicalDawn,
+			nauticalDawn = this.sun.nauticalDawn,
+			civilDawn = this.sun.civilDawn,
+			sunrise = this.sun.sunriseEnd,
+			sunset = this.sun.sunsetStart,
+			civilDusk = this.sun.sunsetStart,
+			nauticalDusk = this.sun.civilDusk,
+			astroDusk = this.sun.nauticalDusk,
+			night = this.sun.astronomicalDusk;
 
 		// TODO noon should refresh in the same way that moonnoon refreshes
 		// NOTE this corrects for DST by adding the timezone offset
@@ -150,7 +57,7 @@ class SkyEvents {
 				astroDusk.getTime() + astroDusk.getTimezoneOffset() * 60 * 1000
 			),
 			night: new Date(night.getTime() + night.getTimezoneOffset() * 60 * 1000),
-			noon: this.sun.today.solarNoon,
+			noon: this.sun.solarNoon,
 		};
 	}
 
@@ -257,6 +164,13 @@ class SkyEvents {
 		}
 
 		clock.globalVariables.setItem('refreshMoon', moonTimes[0].refresh);
+
+		['rise', 'noon', 'set'].forEach((eventName) => {
+			moonTimes[0][eventName] = new Date(
+				moonTimes[0][eventName].getTime() +
+					moonTimes[0][eventName].getTimezoneOffset() * 60 * 1000
+			);
+		});
 
 		return moonTimes[0];
 	}

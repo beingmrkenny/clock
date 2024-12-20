@@ -33,9 +33,6 @@ class Clock {
 		this.showCurrentTime();
 		this.showCurrentDate();
 
-		const refreshSun = this.globalVariables.getItem('refreshSun'),
-			refreshMoon = this.globalVariables.getItem('refreshMoon');
-
 		now = new Dative(this.now()).toString('Y-m-d H:i:s');
 
 		if (this.globalVariables.getItem('debug')) {
@@ -44,16 +41,14 @@ class Clock {
 			);
 		}
 
-		if (now == refreshSun) {
+		if (now.endsWith("00:00:00")) {
 			SkyEvents.placeSun();
 			SkyEvents.drawDaylightHours();
-		}
-
-		if (now == refreshMoon) {
 			SkyEvents.placeMoon();
 			SkyEvents.drawMoonlightArc();
 		}
 
+		// what is this plops?
 		if (qid('MoonlightBar')) {
 			LocationService.execute(SkyEvents.updateMoonlightBar, true);
 		}
@@ -112,8 +107,7 @@ class Clock {
 		const r = 0.87 * this.radius,
 			hoursAndTicks = qid('HoursAndTicks');
 		for (let h = 0; h < 24; h++) {
-			let n = h < 12 ? h + 12 : h - 12;
-			let q = n * 15,
+			let q = (h < 12 ? h + 12 : h - 12) * 15,
 				point = polarToRect(r, q),
 				hour = createElement(
 					`<text
