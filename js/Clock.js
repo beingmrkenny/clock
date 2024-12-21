@@ -208,7 +208,7 @@ class Clock {
 		);
 	}
 
-	static drawArc(start, end, id, accoutrements = false) {
+	static drawArc(start, end, id) {
 		const clock = new Clock();
 
 		start = new Dative().setTimeComponent(
@@ -227,11 +227,8 @@ class Clock {
 			path = `M ${startPos.x},${startPos.y} A ${radius},${radius} 0 ${largeArcFlag} 1 ${endPos.x},${endPos.y}`,
 			arc = createElement(`<path d="${path}" id="${id}Arc">`, 'svg');
 
-		if (accoutrements) {
-			qid('Accoutrements').appendChild(arc);
-		} else {
-			clock.face.appendChild(arc);
-		}
+		clock.face.appendChild(arc);
+
 	}
 
 	static drawLoadingSpinner() {

@@ -51,10 +51,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		clock.data.setItem('moonlightVisible', toggle);
 	});
 
-	if (!clock.now().isWeekend()) {
-		Clock.drawArc('09.00', '17.30', 'Work', true);
-	}
-
 	qid('Cog').addEventListener('click', function () {
 		var ls = new LocalStorage('CLOCK');
 		ls.delete('location');
