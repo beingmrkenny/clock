@@ -48,7 +48,7 @@ class Clock {
 			SkyEvents.drawMoonlightArc();
 			qid('Face').classList.toggle(
 				'dst-rotated',
-				this.now().isDST() || this.now().getTimezoneOffsetDifferenceBetweenAMAndPM != 0
+				this.now().isDST() || this.now().getTimezoneOffsetDifferenceBetweenAMAndPM() != 0
 			);
 		}
 
@@ -108,7 +108,7 @@ class Clock {
 		qid('Face').classList.toggle(
 			'dst-rotated',
 			this.now().isDST() ||
-				this.now().getTimezoneOffsetDifferenceBetweenAMAndPM != 0
+				this.now().getTimezoneOffsetDifferenceBetweenAMAndPM() != 0
 		);
 	}
 
