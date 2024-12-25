@@ -113,7 +113,7 @@ class Clock {
 	}
 
 	drawHours() {
-		const r = 0.87 * this.radius,
+		const r = 0.830 * this.radius,
 			hoursAndTicks = qid('HoursAndTicks');
 		for (let h = 0; h < 24; h++) {
 			let q = (h < 12 ? h + 12 : h - 12) * 15,
@@ -131,45 +131,41 @@ class Clock {
 	}
 
 	drawTicks() {
-		const minutesPerTick = 15,
+		const minutesPerTick = 10,
 			minutesIn24Hours = 1440,
 			numberOfTicks = minutesIn24Hours / minutesPerTick,
 			anglePerTick = 360 / numberOfTicks,
-			tickStart = 0.955,
-			tickEnd = 0.985;
+			endR = 0.985 * this.radius; // further towards the outside
 
-		const startRHour = tickStart * this.radius,
-			startRHalf = tickStart * this.radius,
-			startRQuarter = tickStart * this.radius,
-			endRHour = tickEnd * this.radius,
-			endRDefault = tickEnd * this.radius;
+		const startRHour = 0.900 * this.radius,
+			startRHalf = 0.930 * this.radius,
+			startRQuarter = 0.955 * this.radius;
 
 		let which = 60,
 			hoursAndTicks = qid('HoursAndTicks');
 
 		// m = minute
-		for (let m = 0; m < 1440; m += 15) {
-			let className, startR, endR;
+		for (let m = 0; m < 1440; m += minutesPerTick) {
+			let className, startR;
 			switch (which) {
 				case 60:
 					className = 'hour';
 					startR = startRHour;
-					endR = endRHour;
-					break;
-				case 15:
-				case 45:
-					className = 'quarter';
-					startR = startRQuarter;
-					endR = endRDefault;
 					break;
 				case 30:
 					className = 'half';
 					startR = startRHalf;
-					endR = endRDefault;
+					break;
+				case 10:
+				case 20:
+				case 40:
+				case 50:
+					className = 'quarter';
+					startR = startRQuarter;
 					break;
 			}
 
-			let q = (m / 15) * anglePerTick,
+			let q = (m / minutesPerTick) * anglePerTick,
 				end = polarToRect(endR, q),
 				start = polarToRect(startR, q),
 				tick = createElement(
@@ -179,7 +175,7 @@ class Clock {
 
 			hoursAndTicks.appendChild(tick);
 
-			which = which == 60 ? 15 : which + 15;
+			which = which == 60 ? minutesPerTick : which + minutesPerTick;
 		}
 	}
 
