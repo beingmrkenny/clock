@@ -25,10 +25,9 @@ class Clock {
 	}
 
 	tick() {
-		let now = this.globalVariables.getItem('now');
-		if (now) {
-			this.setNow(now.addMilliseconds(msAdvance));
-		}
+		let now = this.globalVariables.getItem('now') || new Dative();
+
+		this.setNow(now.addMilliseconds(msAdvance));
 
 		this.showCurrentTime();
 		this.showCurrentDate();
