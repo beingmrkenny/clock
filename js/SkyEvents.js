@@ -21,9 +21,6 @@ class SkyEvents {
 	}
 
 	getCurrentSun() {
-
-		console.log(this.sun);
-
 		const astroDawn = this.sun.astronomicalDawn,
 			nauticalDawn = this.sun.nauticalDawn,
 			civilDawn = this.sun.civilDawn,
