@@ -166,6 +166,24 @@ text {
 	}
 }
 
+#Calendar {
+	.day {
+		fill: white;
+	}
+	.past {
+		opacity: 0.3;
+	}
+	.first {
+		fill: red;
+	}
+	.today.ring { fill: white;}
+	.summer-solstice { fill: yellow; }
+	.winter-solstice { fill: blue; }
+	.spring-equinox { fill: green; }
+	.autumn-equinox { fill: orange; }
+	.ring { opacity: .5; }
+}
+
 @keyframes loadingAnimation {
 	0% {
 		transform: rotate(0);

@@ -7,6 +7,7 @@ exports.compileJS = () => {
     const globs = [
         "commun/js/thirdparty/mousetrap.js",
         "commun/js/thirdparty/suncalc.js",
+        "commun/js/thirdparty/Astro.js",
         "commun/js/classes/LocalStorage.js",
         "commun/js/classes/GlobalVariables.js",
         "commun/js/includes/dom.js",

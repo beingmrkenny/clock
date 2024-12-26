@@ -38,14 +38,15 @@ class Clock {
 			);
 		}
 
-		if (now.endsWith("00:00:00")) {
+		if (now.endsWith('00:00:00')) {
 			SkyEvents.placeSun();
 			SkyEvents.drawDaylightHours();
 			SkyEvents.placeMoon();
 			SkyEvents.drawMoonlightArc();
 			qid('Face').classList.toggle(
 				'dst-rotated',
-				this.now().isDST() || this.now().getTimezoneOffsetDifferenceBetweenAMAndPM() != 0
+				this.now().isDST() ||
+					this.now().getTimezoneOffsetDifferenceBetweenAMAndPM() != 0
 			);
 		}
 
@@ -100,6 +101,7 @@ class Clock {
 		this.drawHours();
 		this.drawTicks();
 		this.drawHand();
+		this.drawCalendar();
 
 		qid('Disc').setAttribute('r', this.radius);
 		qid('Face').classList.toggle(
@@ -133,7 +135,7 @@ class Clock {
 			minutesIn24Hours = 1440,
 			numberOfTicks = minutesIn24Hours / minutesPerTick,
 			anglePerTick = 360 / numberOfTicks,
-			radius = 0.930 * this.radius; // larger is further towards the outside
+			radius = 0.93 * this.radius; // larger is further towards the outside
 
 		let which = 60,
 			hoursAndTicks = qid('HoursAndTicks');
@@ -183,6 +185,84 @@ class Clock {
 		);
 	}
 
+	drawCalendar() {
+		const year = this.now().format('Y'),
+			winterSolstice = new Dative(A.Get.winterSolstice(year)),
+			winter = winterSolstice.format('Y-m-d'),
+			spring = new Dative(A.Get.vernalEquinox(year)).format('Y-m-d'),
+			summer = new Dative(A.Get.summerSolstice(year)).format('Y-m-d'),
+			autumn = new Dative(A.Get.fallEquinox(year)).format('Y-m-d'),
+			today = this.now().format('Y-m-d');
+
+		const numberOfDays = year % 4 == 0 ? 365 : 366,
+			anglePerDay = 360 / numberOfDays,
+			radius = 2.2 * this.radius,
+			calendar = qid('Calendar');
+
+		let currentDay = new Dative(winterSolstice);
+		for (let i = 1; i <= numberOfDays; i++) {
+			const angle = (180 - anglePerDay) + i * anglePerDay;
+			const c = polarToRect(radius, angle);
+			const classList = [];
+			const currentDate = currentDay.format('Y-m-d');
+			let ring = false;
+
+			if (currentDay.getDate() == 1) classList.push('first');
+
+			if (currentDate == today) {
+				classList.push('today');
+				ring = true;
+			} else {
+				if (currentDay < this.now()) classList.push('past');
+				if (currentDay > this.now()) classList.push('future');
+			}
+
+			if (currentDate == winter) {
+				classList.push('winter-solstice');
+				ring = true;
+			}
+			if (currentDate == summer) {
+				classList.push('summer-solstice');
+				ring = true;
+			}
+			if (currentDate == spring) {
+				classList.push('spring-equinox');
+				ring = true;
+			}
+			if (currentDate == autumn) {
+				classList.push('autumn-equinox');
+				ring = true;
+			}
+
+			if (ring) {
+				calendar.appendChild(
+					createElement(
+						`<circle cx="${c.x}" cy="${
+							c.y
+						}" r="3" class="ring ${classList.join(' ')}">`,
+						'svg'
+					)
+				);
+			}
+
+			calendar.appendChild(
+				createElement(
+					`<circle cx="${c.x}" cy="${c.y}" r="1" class="day ${classList.join(
+						' '
+					)}" data-date="${currentDate}">`,
+					'svg'
+				)
+			);
+
+			if (currentDay.format('m-d') == '12-31') {
+				currentDay = new Dative('1 Jan ' + year);
+			} else {
+				currentDay = currentDay.addDays(1);
+			}
+			console.log(i);
+		}
+	}
+
 	static drawLocationSpecificDetails() {
 		let clock = new Clock();
 		SkyEvents.drawDaylightHours();
@@ -217,7 +297,6 @@ class Clock {
 			arc = createElement(`<path d="${path}" id="${id}Arc">`, 'svg');
 
 		clock.face.appendChild(arc);
-
 	}
 
 	static drawLoadingSpinner() {
