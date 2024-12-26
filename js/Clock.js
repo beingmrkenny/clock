@@ -6,7 +6,7 @@ class Clock {
 	constructor() {
 		this.svg = qid('ClockSVG');
 		// NOTE: The compiler chokes on this and I don't want to define it all to hell in externs.js
-		this.radius = this.svg.viewBox.baseVal.width / 3;
+		this.radius = this.svg.viewBox.baseVal.width * 0.2;
 		this.face = qid('Face');
 		this.data = new LocalStorage('CLOCK');
 		this.globalVariables = new GlobalVariables('CLOCK');
@@ -110,7 +110,7 @@ class Clock {
 	}
 
 	drawHours() {
-		const r = 0.830 * this.radius,
+		const r = 1.1 * this.radius,
 			hoursAndTicks = qid('HoursAndTicks');
 		for (let h = 0; h < 24; h++) {
 			let q = (h < 12 ? h + 12 : h - 12) * 15,
@@ -118,7 +118,8 @@ class Clock {
 				hour = createElement(
 					`<text
 					x="${point.x}"
-					y="${point.y}">
+					y="${point.y}"
+					transform="rotate(${q}, ${point.x}, ${point.y})">
 					${h}
 				</text>`,
 					'svg'
@@ -132,41 +133,36 @@ class Clock {
 			minutesIn24Hours = 1440,
 			numberOfTicks = minutesIn24Hours / minutesPerTick,
 			anglePerTick = 360 / numberOfTicks,
-			endR = 0.985 * this.radius; // further towards the outside
-
-		const startRHour = 0.900 * this.radius,
-			startRHalf = 0.930 * this.radius,
-			startRQuarter = 0.955 * this.radius;
+			radius = 0.930 * this.radius; // larger is further towards the outside
 
 		let which = 60,
 			hoursAndTicks = qid('HoursAndTicks');
 
 		// m = minute
 		for (let m = 0; m < 1440; m += minutesPerTick) {
-			let className, startR;
+			let className, rAttr;
 			switch (which) {
 				case 60:
 					className = 'hour';
-					startR = startRHour;
+					rAttr = 2;
 					break;
 				case 30:
 					className = 'half';
-					startR = startRHalf;
+					rAttr = 1;
 					break;
 				case 10:
 				case 20:
 				case 40:
 				case 50:
 					className = 'quarter';
-					startR = startRQuarter;
+					rAttr = 1;
 					break;
 			}
 
 			let q = (m / minutesPerTick) * anglePerTick,
-				end = polarToRect(endR, q),
-				start = polarToRect(startR, q),
+				position = polarToRect(radius, q),
 				tick = createElement(
-					`<line x1="${start.x}" y1="${start.y}" x2="${end.x}" y2="${end.y}" class="tick ${className}">`,
+					`<circle cx="${position.x}" cy="${position.y}" r="${rAttr}" class="tick ${className}">`,
 					'svg'
 				);
 
@@ -180,7 +176,7 @@ class Clock {
 		this.face.appendChild(
 			createElement(
 				`<line x1="0" y1="0" x2="0" y2="${
-					-0.94 * this.radius
+					-0.85 * this.radius
 				}" id="HourHand" />`,
 				'svg'
 			)

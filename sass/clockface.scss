@@ -100,8 +100,8 @@ text {
 	}
 
 	@media (prefers-color-scheme: dark) {
-		--foreground-color: #84789d;
-		--background-color: #150439;
+		--foreground-color: white;
+		--background-color: #0b0024;
 	}
 
 	#Disc {
@@ -117,16 +117,13 @@ text {
 	#HourHand {
 		fill: var(--foreground-color);
 		stroke: var(--foreground-color);
-		stroke-width: 3;
+		stroke-width: 6;
 		stroke-linecap: round;
 	}
 
 	.tick {
-		stroke: var(--foreground-color);
-
-		&.hour {
-			stroke-width: 3;
-		}
+		fill: var(--foreground-color);
+		stroke-width: 0;
 	}
 
 	text {
@@ -134,7 +131,8 @@ text {
 		font-size: 16px;
 		dominant-baseline: central;
 
-		fill: var(--foreground-color);
+		fill: white;
+		stroke-width: 0;
 	}
 
 	#Date {

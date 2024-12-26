@@ -21,8 +21,11 @@ const dateTimeDebug = false; // full date time
 // const dateTimeDebug = '23 december 2024 00:00'; // winter (no DST)
 
 const timeDebug = false; // use today, but change the time
+// const timeDebug = "00:00:00"; // use today, but change the time
 const msAdvance = 1000; // each tick advances the time by this much
 const msInterval = 1000; // how often should each tick happen
+// const msAdvance = 60000; // each tick advances the time by this much
+// const msInterval = 20; // how often should each tick happen
 
 document.addEventListener('DOMContentLoaded', function () {
 	var clock = new Clock();
