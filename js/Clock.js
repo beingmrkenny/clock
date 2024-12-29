@@ -201,13 +201,17 @@ class Clock {
 
 		let currentDay = new Dative(winterSolstice);
 		for (let i = 1; i <= numberOfDays; i++) {
-			const angle = (180 - anglePerDay) + i * anglePerDay;
-			const c = polarToRect(radius, angle);
-			const classList = [];
-			const currentDate = currentDay.format('Y-m-d');
-			let ring = false;
+			const angle = (180 - anglePerDay) + i * anglePerDay,
+				c = polarToRect(radius, angle),
+				classList = [],
+				currentDate = currentDay.format('Y-m-d');
+			let r = 1,
+				ring = false;
 
-			if (currentDay.getDate() == 1) classList.push('first');
+			if (currentDay.getDate() == 1) {
+				classList.push('first')
+				r = 2;
+			}
 
 			if (currentDate == today) {
 				classList.push('today');
@@ -247,7 +251,7 @@ class Clock {
 
 			calendar.appendChild(
 				createElement(
-					`<circle cx="${c.x}" cy="${c.y}" r="1" class="day ${classList.join(
+					`<circle cx="${c.x}" cy="${c.y}" r="${r}" class="day ${classList.join(
 						' '
 					)}" data-date="${currentDate}">`,
 					'svg'

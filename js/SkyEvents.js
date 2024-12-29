@@ -60,7 +60,7 @@ class SkyEvents {
 		};
 	}
 
-	getCurrentMoon(now) {
+	getCurrentMoon() {
 		const today = SunCalc.getMoonTimes(
 			new Dative(this.now),
 			this.location.latitude,
@@ -92,12 +92,10 @@ class SkyEvents {
 			set = today.set;
 		}
 
-		let highest = this.findHighest(rise, set);
-
 		return {
-			rise: rise,
-			set: set,
-			highest: highest,
+			rise: rise.getTime() + rise.getTimezoneOffset() * 60 * 1000,
+			set: set.getTime() + set.getTimezoneOffset() * 60 * 1000,
+			highest: this.findHighest(rise, set),
 		};
 	}
 
@@ -149,7 +147,7 @@ class SkyEvents {
 			lastHighestAltitude = highestPosition.altitude;
 		}
 
-		return highest;
+		return highest.getTime() + highest.getTimezoneOffset() * 60 * 1000;
 	}
 
 	static placeSun() {
