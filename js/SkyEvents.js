@@ -31,7 +31,6 @@ class SkyEvents {
 			astroDusk = this.sun.nauticalDusk,
 			night = this.sun.astronomicalDusk;
 
-		// TODO noon should refresh in the same way that moonnoon refreshes
 		// NOTE this corrects for DST by adding the timezone offset
 		return {
 			astroDawn: new Date(
@@ -62,168 +61,95 @@ class SkyEvents {
 	}
 
 	getCurrentMoon(now) {
-		// QUESTION seems horrendously clumsy — five days calc — there might be a more mathematical way to do it without all the fannying
+		const today = SunCalc.getMoonTimes(
+			new Dative(this.now),
+			this.location.latitude,
+			this.location.longitude
+		);
 
-		const clock = new Clock(),
-			moonStore = new LocalStorage('MOON');
-		let moonTimes = moonStore.getItem('moonTimes') || null;
+		let rise, set;
 
-		if (!moonTimes) {
-			const times = [
-				new Dative(this.now).addDays(-2),
+		if (today.rise.getDate() == today.set.getDate()) {
+			if (today.rise < today.set) {
+				rise = today.rise;
+				set = today.set;
+			} else if (today.rise > today.set) {
+				const tomorrow = SunCalc.getMoonTimes(
+					new Dative(this.now).addDays(1),
+					this.location.latitude,
+					this.location.longitude
+				);
+				rise = today.rise;
+				set = tomorrow.set;
+			}
+		} else if (today.rise.getDate() > today.set.getDate()) {
+			const yesterday = SunCalc.getMoonTimes(
 				new Dative(this.now).addDays(-1),
-				new Dative(this.now),
-				new Dative(this.now).addDays(1),
-				new Dative(this.now).addDays(2),
-			];
-
-			const allMoonTimes = [
-				SunCalc.getMoonTimes(
-					times[0],
-					this.location.latitude,
-					this.location.longitude,
-					true
-				),
-				SunCalc.getMoonTimes(
-					times[1],
-					this.location.latitude,
-					this.location.longitude
-				),
-				SunCalc.getMoonTimes(
-					times[2],
-					this.location.latitude,
-					this.location.longitude
-				),
-				SunCalc.getMoonTimes(
-					times[3],
-					this.location.latitude,
-					this.location.longitude
-				),
-				SunCalc.getMoonTimes(
-					times[4],
-					this.location.latitude,
-					this.location.longitude
-				),
-			];
-
-			const moonEvents = [];
-			for (let day in allMoonTimes) {
-				for (let eventName in allMoonTimes[day]) {
-					moonEvents.push({
-						time: allMoonTimes[day][eventName],
-						name: eventName,
-					});
-				}
-			}
-			moonEvents.sort(Time.sortArray);
-			if (moonEvents[0].name == 'set') {
-				moonEvents.shift();
-			}
-			if (moonEvents[moonEvents.length - 1].name == 'rise') {
-				moonEvents.pop();
-			}
-
-			let moon = {};
-			moonTimes = [];
-			for (let i = 0, x = moonEvents.length; i < x; i++) {
-				if (moonEvents[i].name == 'rise') {
-					moon.rise = moonEvents[i].time;
-				} else if (moonEvents[i].name == 'set') {
-					moon.set = moonEvents[i].time;
-
-					// for sorting
-					// FIXME this is possibly brock
-					moon.time = moon.rise
-						? Math.min(
-								Math.abs(this.now - moon.rise.valueOf()),
-								Math.abs(this.now - moon.set.valueOf())
-						  )
-						: Math.abs(this.now - moon.set.valueOf());
-
-					moon.refresh = null;
-
-					const next = moonEvents[i + 1];
-					if (next) {
-						// work out the difference between the next rise and the current sunset
-						// refresh is half that time from set
-						const diff = new Dative(next.time) - new Dative(moon.set);
-						moon.refresh = new Dative(moon.set)
-							.addMilliseconds(diff / 2 + 500)
-							.toString('Y-m-d H:i:s');
-					}
-
-					moonTimes.push(moon);
-				}
-			}
-
-			moonTimes.sort(Time.sortArray);
-			moonTimes[0].noon = this.addMoonNoon(moonTimes[0]);
-			if (!clock.globalVariables.getItem('debug')) {
-				moonStore.setItem('moonTimes', moonTimes, moonTimes[0].refresh);
-			}
+				this.location.latitude,
+				this.location.longitude
+			);
+			rise = yesterday.rise;
+			set = today.set;
 		}
 
-		clock.globalVariables.setItem('refreshMoon', moonTimes[0].refresh);
+		let highest = this.findHighest(rise, set);
 
-		['rise', 'noon', 'set'].forEach((eventName) => {
-			moonTimes[0][eventName] = new Date(
-				moonTimes[0][eventName].getTime() +
-					moonTimes[0][eventName].getTimezoneOffset() * 60 * 1000
-			);
-		});
-
-		return moonTimes[0];
+		return {
+			rise: rise,
+			set: set,
+			highest: highest,
+		};
 	}
 
-	addMoonNoon(moonTimes) {
+	findHighest(rise, set) {
 		let lastHighestAltitude,
-			guessMoonNoon,
-			guessMoonNoonPosition,
-			moonNoon,
-			moonNoonPosition,
+			guessHighest,
+			guessHighestPosition,
+			highest,
+			highestPosition,
 			direction;
 
 		// Start halfway through the moon's path
-		guessMoonNoon = new Dative(moonTimes.rise);
-		guessMoonNoon.addMilliseconds((moonTimes.set - moonTimes.rise) / 2);
-		guessMoonNoonPosition = SunCalc.getMoonPosition(
-			guessMoonNoon,
+		guessHighest = new Dative(rise);
+		guessHighest.addMilliseconds((set - rise) / 2);
+		guessHighestPosition = SunCalc.getMoonPosition(
+			guessHighest,
 			this.location.latitude,
 			this.location.longitude
 		);
-		lastHighestAltitude = guessMoonNoonPosition.altitude;
+		lastHighestAltitude = guessHighestPosition.altitude;
 
 		// find the direction to go in
-		moonNoon = new Dative(guessMoonNoon);
-		moonNoon.addMilliseconds(60000);
-		moonNoonPosition = SunCalc.getMoonPosition(
-			moonNoon,
+		highest = new Dative(guessHighest);
+		highest.addMilliseconds(60000);
+		highestPosition = SunCalc.getMoonPosition(
+			highest,
 			this.location.latitude,
 			this.location.longitude
 		);
-		moonNoon.addMilliseconds(-60000);
-		direction = moonNoonPosition.altitude > lastHighestAltitude ? 1 : -1;
+		highest.addMilliseconds(-60000);
+		direction = highestPosition.altitude > lastHighestAltitude ? 1 : -1;
 
 		// Now start going in that direction
-		moonNoon.addMilliseconds(direction * 60000);
-		moonNoonPosition = SunCalc.getMoonPosition(
-			moonNoon,
+		highest.addMilliseconds(direction * 60000);
+		highestPosition = SunCalc.getMoonPosition(
+			highest,
 			this.location.latitude,
 			this.location.longitude
 		);
 
 		// Find the highest altitude
-		while (moonNoonPosition.altitude > lastHighestAltitude) {
-			moonNoon.addMilliseconds(direction * 60000);
-			moonNoonPosition = SunCalc.getMoonPosition(
-				moonNoon,
+		while (highestPosition.altitude > lastHighestAltitude) {
+			highest.addMilliseconds(direction * 60000);
+			highestPosition = SunCalc.getMoonPosition(
+				highest,
 				this.location.latitude,
 				this.location.longitude
 			);
-			lastHighestAltitude = moonNoonPosition.altitude;
+			lastHighestAltitude = highestPosition.altitude;
 		}
 
-		return moonNoon;
+		return highest;
 	}
 
 	static placeSun() {
@@ -254,7 +180,7 @@ class SkyEvents {
 			moon = skyEvents.getCurrentMoon();
 		if (moon) {
 			const clock = new Clock(),
-				pos = polarToRect(clock.radius * 1.3, Time.asClockAngle(moon.noon)),
+				pos = polarToRect(clock.radius * 1.3, Time.asClockAngle(moon.highest)),
 				moonIcon = qid('Moon'),
 				r = moonIcon.getAttribute('width') / 2;
 			moonIcon.setAttribute('x', pos.x - r);
@@ -460,8 +386,8 @@ class SkyEvents {
 			skyEvents = new SkyEvents(),
 			currentSun = skyEvents.getCurrentSun(),
 			currentMoon = skyEvents.getCurrentMoon(),
-			moonNoon = new Dative(currentMoon.noon),
-			illumination = SunCalc.getMoonIllumination(new Dative(currentMoon.noon));
+			moonHighest = new Dative(currentMoon.highest),
+			illumination = SunCalc.getMoonIllumination(new Dative(currentMoon.highest));
 		let phase = illumination.phaseValue >= 1 ? 0 : illumination.phaseValue,
 			d;
 
@@ -493,7 +419,7 @@ class SkyEvents {
 		qid('Shadow').setAttribute('d', d);
 
 		// if (skyEvents.location) {
-		// 	let position = SunCalc.getMoonPosition(moonNoon, skyEvents.location.latitude, skyEvents.location.longitude),
+		// 	let position = SunCalc.getMoonPosition(moonHighest, skyEvents.location.latitude, skyEvents.location.longitude),
 		// 		radians = illumination.angle - position.parallacticAngle,
 		// 		degrees = radians / (Math.PI/180);
 		// 	qid('Moon').setAttribute('transform', `rotate(${degrees} ${xOrigin - r} ${top + r})`);
@@ -502,7 +428,7 @@ class SkyEvents {
 
 		moon.classList.toggle(
 			'daytime-moon',
-			moonNoon.isBetween(
+			moonHighest.isBetween(
 				new Dative(currentSun.rise).toString('H:i'),
 				new Dative(currentSun.set).toString('H:i')
 			)

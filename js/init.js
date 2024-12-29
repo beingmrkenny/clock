@@ -1,6 +1,6 @@
 const dateTimeDebug = false; // full date time
 
-// const dateTimeDebug = '30 January 2024 00:15';
+// const dateTimeDebug = '22 December 2024 00:15';
 
 // const dateTimeDebug = '28 march 2024 00:15'; // spring forward - 3
 // const dateTimeDebug = '29 march 2024 00:15'; // spring forward - 2

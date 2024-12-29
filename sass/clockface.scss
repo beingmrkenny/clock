@@ -177,10 +177,10 @@ text {
 		fill: red;
 	}
 	.today.ring { fill: white;}
-	.summer-solstice { fill: yellow; }
-	.winter-solstice { fill: blue; }
-	.spring-equinox { fill: green; }
-	.autumn-equinox { fill: orange; }
+	.summer-solstice { fill: rgb(251, 251, 175); }
+	.winter-solstice { fill: rgb(0, 34, 255); }
+	.spring-equinox { fill: rgb(161, 255, 30); }
+	.autumn-equinox { fill: rgb(255, 98, 0); }
 	.ring { opacity: .5; }
 }
 
