@@ -1,7 +1,7 @@
 class Time {
 	static asClockAngle(givenTime) {
 		const time = new Dative(givenTime || null),
-			midnight = new Dative(time).setHours(0, 0, 0, 0),
+			midnight = new Dative(time).setUTCHours(0, 0, 0, 0),
 			asDecimalThroughDay =
 				(time.valueOf() - midnight.valueOf()) / (24 * 60 * 60 * 1000);
 		return 180 + asDecimalThroughDay * 360;

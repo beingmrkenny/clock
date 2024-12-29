@@ -259,7 +259,6 @@ class Clock {
 			} else {
 				currentDay = currentDay.addDays(1);
 			}
-			console.log(i);
 		}
 	}
 
