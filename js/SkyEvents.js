@@ -155,7 +155,7 @@ class SkyEvents {
 			sun = skyEvents.getCurrentSun();
 		if (sun) {
 			const clock = new Clock(),
-				pos = polarToRect(clock.radius * 1.5, Time.asClockAngle(sun.noon)),
+				pos = polarToRect(clock.radius * 1.3, Time.asClockAngle(sun.noon)),
 				sunIcon = qid('Sun'),
 				sunGradient = qid('SunGradient'),
 				sunBurst = qid('SunBurst');

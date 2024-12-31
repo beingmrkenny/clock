@@ -6,7 +6,7 @@ class Clock {
 	constructor() {
 		this.svg = qid('ClockSVG');
 		// NOTE: The compiler chokes on this and I don't want to define it all to hell in externs.js
-		this.radius = this.svg.viewBox.baseVal.width * 0.2;
+		this.radius = this.svg.viewBox.baseVal.width * 0.37;
 		this.face = qid('Face');
 		this.data = new LocalStorage('CLOCK');
 		this.globalVariables = new GlobalVariables('CLOCK');
@@ -109,6 +109,11 @@ class Clock {
 			this.now().isDST() ||
 				this.now().getTimezoneOffsetDifferenceBetweenAMAndPM() != 0
 		);
+
+		const date = qid('Date');
+		let xy = polarToRect(0.5 * this.radius, 90);
+		date.setAttribute('x', xy.x);
+		date.setAttribute('y', xy.y);
 	}
 
 	drawHours() {
@@ -121,6 +126,7 @@ class Clock {
 					`<text
 					x="${point.x}"
 					y="${point.y}"
+					class="hour-digit"
 					transform="rotate(${q}, ${point.x}, ${point.y})">
 					${h}
 				</text>`,
@@ -178,7 +184,7 @@ class Clock {
 		this.face.appendChild(
 			createElement(
 				`<line x1="0" y1="0" x2="0" y2="${
-					-0.85 * this.radius
+					-0.9 * this.radius
 				}" id="HourHand" />`,
 				'svg'
 			)
@@ -186,18 +192,19 @@ class Clock {
 	}
 
 	drawCalendar() {
-		const year = this.now().format('Y'),
-			winterSolstice = new Dative(A.Get.winterSolstice(year)),
+
+		const radius = 0.86 * this.radius,
+			year = this.now().format('Y'),
+			numberOfDays = year % 4 == 0 ? 365 : 366,
+			anglePerDay = 360 / numberOfDays,
+			calendar = qid('Calendar');
+
+		const winterSolstice = new Dative(A.Get.winterSolstice(year)),
 			winter = winterSolstice.format('Y-m-d'),
 			spring = new Dative(A.Get.vernalEquinox(year)).format('Y-m-d'),
 			summer = new Dative(A.Get.summerSolstice(year)).format('Y-m-d'),
 			autumn = new Dative(A.Get.fallEquinox(year)).format('Y-m-d'),
 			today = this.now().format('Y-m-d');
-
-		const numberOfDays = year % 4 == 0 ? 365 : 366,
-			anglePerDay = 360 / numberOfDays,
-			radius = 2.2 * this.radius,
-			calendar = qid('Calendar');
 
 		let currentDay = new Dative(winterSolstice);
 		for (let i = 1; i <= numberOfDays; i++) {
@@ -205,17 +212,19 @@ class Clock {
 				c = polarToRect(radius, angle),
 				classList = [],
 				currentDate = currentDay.format('Y-m-d');
-			let r = 1,
+			let dotR = 1,
+				ringR = 8,
 				ring = false;
 
 			if (currentDay.getDate() == 1) {
-				classList.push('first')
-				r = 2;
+				classList.push('first');
+				dotR = 2;
 			}
 
 			if (currentDate == today) {
 				classList.push('today');
 				ring = true;
+				ringR = 4;
 			} else {
 				if (currentDay < this.now()) classList.push('past');
 				if (currentDay > this.now()) classList.push('future');
@@ -239,11 +248,11 @@ class Clock {
 			}
 
 			if (ring) {
-				calendar.appendChild(
+				calendar.prepend(
 					createElement(
 						`<circle cx="${c.x}" cy="${
 							c.y
-						}" r="3" class="ring ${classList.join(' ')}">`,
+						}" r="${ringR}" class="ring ${classList.join(' ')}">`,
 						'svg'
 					)
 				);
@@ -251,7 +260,9 @@ class Clock {
 
 			calendar.appendChild(
 				createElement(
-					`<circle cx="${c.x}" cy="${c.y}" r="${r}" class="day ${classList.join(
+					`<circle cx="${c.x}" cy="${
+						c.y
+					}" r="${dotR}" class="day ${classList.join(
 						' '
 					)}" data-date="${currentDate}">`,
 					'svg'
