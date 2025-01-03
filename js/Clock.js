@@ -213,12 +213,12 @@ class Clock {
 				classList = [],
 				currentDate = currentDay.format('Y-m-d');
 			let dotR = 1,
-				ringR = 8,
+				ringR = 6,
 				ring = false;
 
 			if (currentDay.getDate() == 1) {
 				classList.push('first');
-				dotR = 2;
+				dotR = 1.5;
 			}
 
 			if (currentDate == today) {
