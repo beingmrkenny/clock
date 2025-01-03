@@ -187,22 +187,6 @@ text {
 
 	.day {
 		fill: var(--foreground-color);
-
-		&.summer-solstice {
-			fill: var(--summer);
-		}
-
-		&.winter-solstice {
-			fill: var(--winter);
-		}
-
-		&.spring-equinox {
-			fill: var(--spring);
-		}
-
-		&.autumn-equinox {
-			fill: var(--autumn);
-		}
 	}
 
 	.past {
