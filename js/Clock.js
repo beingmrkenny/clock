@@ -195,7 +195,7 @@ class Clock {
 
 		const radius = 0.86 * this.radius,
 			year = this.now().format('Y'),
-			numberOfDays = year % 4 == 0 ? 365 : 366,
+			numberOfDays = year % 4 == 0 ? 366 : 365,
 			anglePerDay = 360 / numberOfDays,
 			calendar = qid('Calendar');
 
