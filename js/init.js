@@ -52,10 +52,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	qid('Moon').addEventListener('click', function () {
 		let moonlightHours = qid('MoonlightHours'),
-			clock = new Clock(),
 			toggle = !moonlightHours.classList.contains('transparent');
-		qid('MoonlightHours').classList.toggle('transparent', toggle);
-		clock.data.setItem('moonlightVisible', toggle);
+		moonlightHours.classList.toggle('transparent', toggle);
+		setTimeout(() => {
+			qid('MoonlightHours').classList.add('transparent');
+		}, 7000);
 	});
 
 	qid('Cog').addEventListener('click', function () {

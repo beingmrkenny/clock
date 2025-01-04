@@ -285,10 +285,6 @@ class Clock {
 		SkyEvents.drawMoonlightArc();
 		SkyEvents.drawMoonlightBar();
 		SkyEvents.changeMoonPhase();
-		qid('MoonlightHours').classList.toggle(
-			'transparent',
-			!clock.data.getItem('moonlightVisible')
-		);
 	}
 
 	static drawArc(start, end, id) {

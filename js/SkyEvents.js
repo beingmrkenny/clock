@@ -300,10 +300,6 @@ class SkyEvents {
 
 		SkyEvents.drawMoonlightBar(moon);
 
-		setTimeout(function () {
-			qid('MoonlightHours').classList.remove('transparent');
-		}, 1);
-
 		Clock.removeLoadingSpinner();
 	}
 
@@ -311,8 +307,7 @@ class SkyEvents {
 		const clock = new Clock(),
 			moonlightBar = qid('MoonlightBar'),
 			skyEvents = new SkyEvents();
-		let removeTransparency = false,
-			moonPath,
+		let moonPath,
 			start;
 
 		if (typeof moon == 'undefined') {
@@ -340,13 +335,6 @@ class SkyEvents {
 			qid('MoonlightHours').prepend(
 				createElement(`<path d="${moonPath}" id="MoonlightBar">`, 'svg')
 			);
-			removeTransparency = true;
-		}
-
-		if (removeTransparency) {
-			setTimeout(function () {
-				qid('MoonlightHours').classList.remove('transparent');
-			}, 1);
 		}
 	}
 
