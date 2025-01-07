@@ -101,6 +101,7 @@ class Clock {
 		this.drawHours();
 		this.drawTicks();
 		this.drawHand();
+		this.drawDate();
 		this.drawCalendar();
 
 		qid('Disc').setAttribute('r', this.radius);
@@ -109,11 +110,6 @@ class Clock {
 			this.now().isDST() ||
 				this.now().getTimezoneOffsetDifferenceBetweenAMAndPM() != 0
 		);
-
-		const date = qid('Date');
-		let xy = polarToRect(0.5 * this.radius, 90);
-		date.setAttribute('x', xy.x);
-		date.setAttribute('y', xy.y);
 	}
 
 	drawHours() {
@@ -191,6 +187,42 @@ class Clock {
 		);
 	}
 
+	drawDate() {
+
+		this.showCurrentDate();
+
+		const dateGroup = qid('DateGroup');
+		const radius = -0.8 * this.radius;
+		const summer = new Dative(A.Get.summerSolstice(this.now().format('Y')));
+		const rotate = (this.now() <= summer) ? 90 : -90;
+
+		const date = qid('Date');
+		date.setAttribute('x', 0);
+		date.setAttribute('y', radius/2);
+		date.setAttribute('transform', `rotate(${rotate}, 0, -80)`);
+
+		const box = date.getBBox();
+
+		dateGroup.prepend(
+			createElement(
+				`<line
+					x1="0" y1="${radius / 2 - box.width / 2 - 10}"
+					x2="0" y2="${radius / 2 + box.width / 2}"
+					id="DateMask" />`,
+				'svg'
+			)
+		);
+
+		dateGroup.prepend(
+			createElement(
+				`<line x1="0" y1="-15" x2="0" y2="${
+					radius
+				}" id="DateHand" />`,
+				'svg'
+			)
+		);
+	}
+
 	drawCalendar() {
 
 		const radius = 0.86 * this.radius,
@@ -227,6 +259,7 @@ class Clock {
 			}
 
 			if (currentDate == today) {
+				qid('DateGroup').setAttribute('transform', `rotate(${angle}, 0, 0)`);
 				classList.push('today');
 				ring = true;
 			} else {

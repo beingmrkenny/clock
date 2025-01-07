@@ -112,7 +112,7 @@ text {
 		stroke: none;
 	}
 
-	#Pivot {
+	#HourPivot {
 		fill: var(--foreground-color);
 		stroke: none;
 	}
@@ -122,6 +122,31 @@ text {
 		stroke: var(--foreground-color);
 		stroke-width: 6;
 		stroke-linecap: round;
+	}
+
+	#DateMask {
+		stroke: var(--background-color);
+		stroke-width: 5;
+	}
+
+	#DatePivot {
+		fill: none;
+		stroke: var(--foreground-color);
+		stroke-width: 2;
+	}
+
+	#DateHand {
+		fill: var(--foreground-color);
+		stroke: var(--foreground-color);
+		stroke-width: 4;
+		stroke-linecap: round;
+	}
+
+	#Date {
+		font-size: 16px;
+		font-weight: bold;
+		text-transform: uppercase;
+		dominant-baseline: auto;
 	}
 
 	.tick {
@@ -142,12 +167,6 @@ text {
 		fill: white;
 	}
 
-	#Date {
-		font-size: 16px;
-		font-weight: bold;
-		text-transform: uppercase;
-		dominant-baseline: mathematical;
-	}
 }
 
 #CelestialBodies {
