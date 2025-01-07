@@ -181,12 +181,42 @@ text {
 	--spring: rgb(161, 255, 30);
 	--autumn: rgb(255, 143, 0);
 
+	--january: rgb(0, 213, 255);
+	--february: rgb(0, 200, 255);
+	--march: rgb(161, 255, 30);
+	--april: rgb(206, 255, 30);
+	--may: rgb(236, 255, 30);
+	--june: rgb(255, 227, 0);
+	--july: rgb(255, 247, 0);
+	--august: rgb(255, 238, 0);
+	--september: rgb(255, 143, 0);
+	--october: rgb(255, 140, 0);
+	--november: rgb(255, 163, 65);
+	--december: rgb(0, 170, 255);
+
 	circle {
 		stroke-width: 0;
 	}
 
-	.day {
+	.dot {
 		fill: var(--foreground-color);
+		// fill: none;
+		opacity: .3;
+		&.first {
+			opacity: 1;
+			&.january { fill: var(--january); }
+			&.february { fill: var(--february); }
+			&.march { fill: var(--march); }
+			&.april { fill: var(--april); }
+			&.may { fill: var(--may); }
+			&.june { fill: var(--june); }
+			&.july { fill: var(--july); }
+			&.august { fill: var(--august); }
+			&.september { fill: var(--september); }
+			&.october { fill: var(--october); }
+			&.november { fill: var(--november); }
+			&.december { fill: var(--december); }
+		}
 	}
 
 	.past {
@@ -195,31 +225,37 @@ text {
 
 	.ring {
 		&.today {
-			fill: red;
+			fill: rgb(255, 0, 0);
+			&.first{
+				&.january { fill: var(--january); }
+				&.february { fill: var(--february); }
+				&.march { fill: var(--march); }
+				&.april { fill: var(--april); }
+				&.may { fill: var(--may); }
+				&.june { fill: var(--june); }
+				&.july { fill: var(--july); }
+				&.august { fill: var(--august); }
+				&.september { fill: var(--september); }
+				&.october { fill: var(--october); }
+				&.november { fill: var(--november); }
+				&.december { fill: var(--december); }
+			}
 		}
 
 		&.summer-solstice {
-			stroke: var(--summer);
-			stroke-width: 2;
-			fill: none;
+			fill: var(--summer);
 		}
 
 		&.winter-solstice {
-			stroke: var(--winter);
-			stroke-width: 2;
-			fill: none;
+			fill: var(--winter);
 		}
 
 		&.spring-equinox {
-			stroke: var(--spring);
-			stroke-width: 2;
-			fill: none;
+			fill: var(--spring);
 		}
 
 		&.autumn-equinox {
-			stroke: var(--autumn);
-			stroke-width: 2;
-			fill: none;
+			fill: var(--autumn);
 		}
 	}
 

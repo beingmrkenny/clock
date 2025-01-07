@@ -208,42 +208,50 @@ class Clock {
 
 		let currentDay = new Dative(winterSolstice);
 		for (let i = 1; i <= numberOfDays; i++) {
+
 			const angle = (180 - anglePerDay) + i * anglePerDay,
 				c = polarToRect(radius, angle),
 				classList = [],
 				currentDate = currentDay.format('Y-m-d');
-			let dotR = 1,
-				ringR = 6,
+
+			let dotR = .5,
+				ringR = 2,
 				ring = false;
+
+			classList.push(currentDay.format('F').toLowerCase());
 
 			if (currentDay.getDate() == 1) {
 				classList.push('first');
-				dotR = 1.5;
+				ringR = 2;
+				dotR = 2;
 			}
 
 			if (currentDate == today) {
 				classList.push('today');
 				ring = true;
-				ringR = 4;
 			} else {
 				if (currentDay < this.now()) classList.push('past');
 				if (currentDay > this.now()) classList.push('future');
 			}
 
 			if (currentDate == winter) {
-				classList.push('winter-solstice');
+				classList.push('solar-point', 'winter-solstice');
+				ringR = 3;
 				ring = true;
 			}
 			if (currentDate == summer) {
-				classList.push('summer-solstice');
+				classList.push('solar-point', 'summer-solstice');
+				ringR = 3;
 				ring = true;
 			}
 			if (currentDate == spring) {
-				classList.push('spring-equinox');
+				classList.push('solar-point', 'spring-equinox');
+				ringR = 3;
 				ring = true;
 			}
 			if (currentDate == autumn) {
-				classList.push('autumn-equinox');
+				classList.push('solar-point', 'autumn-equinox');
+				ringR = 3;
 				ring = true;
 			}
 
@@ -262,7 +270,7 @@ class Clock {
 				createElement(
 					`<circle cx="${c.x}" cy="${
 						c.y
-					}" r="${dotR}" class="day ${classList.join(
+					}" r="${dotR}" class="dot ${classList.join(
 						' '
 					)}" data-date="${currentDate}">`,
 					'svg'
