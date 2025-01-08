@@ -1,42 +1,41 @@
 @use "sass:color";
 
 #ClockSVG {
-	overflow: visible;
-
+	position: absolute;
 	width: 90vmin;
 	height: 90vmin;
+	overflow: visible;
 	margin: auto;
-	position: absolute;
 
 	@media (prefers-color-scheme: light) {
-		--foreground-color: black;
 		--background-color: white;
+
+		--foreground-color: black;
 	}
 
 	@media (prefers-color-scheme: dark) {
-		--foreground-color: white;
 		--background-color: #0b0024;
+
+		--foreground-color: white;
 	}
 }
 
 #DaylightHoursSVG {
-	overflow: visible;
-
+	position: absolute;
 	width: 100vw;
 	height: 100vh;
+	overflow: visible;
 	margin: auto;
-	position: absolute;
 }
 
 #DaylightHours {
-
 	path {
 		transition: opacity 250ms;
 	}
 
 	#Day {
+		opacity: .9;
 		fill: url(#DaylightSky);
-		opacity: 0.9;
 	}
 
 	#DawnAstronomicalTwilight,
@@ -50,23 +49,22 @@
 
 	#DawnCivilTwilight,
 	#DuskCivilTwilight {
-		opacity: 0.8;
+		opacity: .8;
 	}
 
 	#DawnNauticalTwilight,
 	#DuskNauticalTwilight {
-		opacity: 0.2;
+		opacity: .2;
 	}
 
 	#DawnAstronomicalTwilight,
 	#DuskAstronomicalTwilight {
-		opacity: 0.08;
+		opacity: .08;
 	}
 
 	#Night {
 		fill: #0b0024;
 	}
-
 }
 
 #MoonlightHours {
@@ -74,17 +72,19 @@
 }
 
 #MoonlightArc {
-	stroke: rgba(255, 255, 255, 0.22);
-	stroke-width: 1px;
-	stroke-linecap: round;
 	fill: none;
+	stroke: rgba(255, 255, 255, .22);
+	stroke-width: 1px;
+
+	stroke-linecap: round;
 }
 
 #MoonlightBar {
-	stroke: rgba(255, 255, 255, 0.2);
-	stroke-width: 8px;
-	stroke-linecap: round;
 	fill: none;
+	stroke: rgba(255, 255, 255, .2);
+	stroke-width: 8px;
+
+	stroke-linecap: round;
 }
 
 text {
@@ -97,11 +97,11 @@ text {
 }
 
 #Face {
-	user-select: none;
 	fill: none;
 	stroke: var(--foreground-color);
 
-	transition: transform .5s cubic-bezier(0.83, 0, 0.17, 1);
+	user-select: none;
+	transition: transform .5s cubic-bezier(.83, 0, .17, 1);
 
 	&.dst-rotated {
 		transform: rotate(-15deg);
@@ -112,16 +112,35 @@ text {
 		stroke: none;
 	}
 
-	#HourPivot {
+	#TimePivot {
 		fill: var(--foreground-color);
 		stroke: none;
 	}
 
-	#HourHand {
+	#DatePivot {
+		fill: none;
+		stroke-width: 2;
+	}
+
+	#TimeHand,
+	#DateHand {
 		fill: var(--foreground-color);
 		stroke: var(--foreground-color);
-		stroke-width: 6;
+
 		stroke-linecap: round;
+	}
+
+	#DateHand {
+		stroke-width: 4;
+	}
+
+	#TimeHand {
+		stroke-width: 6;
+	}
+
+	#TimeMask {
+		stroke: var(--background-color);
+		stroke-width: 8;
 	}
 
 	#DateMask {
@@ -129,23 +148,12 @@ text {
 		stroke-width: 5;
 	}
 
-	#DatePivot {
-		fill: none;
-		stroke: var(--foreground-color);
-		stroke-width: 2;
-	}
-
-	#DateHand {
-		fill: var(--foreground-color);
-		stroke: var(--foreground-color);
-		stroke-width: 4;
-		stroke-linecap: round;
-	}
-
+	#Time,
 	#Date {
 		font-size: 16px;
 		font-weight: bold;
 		text-transform: uppercase;
+
 		dominant-baseline: auto;
 	}
 
@@ -155,36 +163,40 @@ text {
 	}
 
 	text {
-		font-family: Helvetica;
-		font-size: 16px;
-		dominant-baseline: central;
-
 		fill: var(--foreground-color);
 		stroke-width: 0;
+
+		font-family: Helvetica;
+		font-size: 16px;
+
+		dominant-baseline: central;
 	}
 
 	.hour-digit {
 		fill: white;
 	}
-
 }
 
 #CelestialBodies {
 	#Sun {
-		stroke: none;
 		fill: url(#SunGradient);
+		stroke: none;
+
 		filter: url(#SunBlur);
 	}
 
 	#SunBurst {
-		stroke: none;
 		fill: #fff;
+		stroke: none;
+
 		filter: url(#SunBurstBlur);
+
 		fill-opacity: 1;
 	}
 
 	#Moon {
 		cursor: pointer;
+
 		clip-path: url(#ShadowClip);
 
 		&.daytime-moon {
@@ -194,12 +206,10 @@ text {
 }
 
 #Calendar {
-
 	--summer: rgb(255, 227, 0);
 	--winter: rgb(0, 170, 255);
 	--spring: rgb(161, 255, 30);
 	--autumn: rgb(255, 143, 0);
-
 	--january: rgb(0, 213, 255);
 	--february: rgb(0, 200, 255);
 	--march: rgb(161, 255, 30);
@@ -218,46 +228,119 @@ text {
 	}
 
 	.dot {
-		fill: var(--foreground-color);
 		// fill: none;
 		opacity: .3;
+		fill: var(--foreground-color);
+
 		&.first {
 			opacity: 1;
-			&.january { fill: var(--january); }
-			&.february { fill: var(--february); }
-			&.march { fill: var(--march); }
-			&.april { fill: var(--april); }
-			&.may { fill: var(--may); }
-			&.june { fill: var(--june); }
-			&.july { fill: var(--july); }
-			&.august { fill: var(--august); }
-			&.september { fill: var(--september); }
-			&.october { fill: var(--october); }
-			&.november { fill: var(--november); }
-			&.december { fill: var(--december); }
+
+			&.january {
+				fill: var(--january);
+			}
+
+			&.february {
+				fill: var(--february);
+			}
+
+			&.march {
+				fill: var(--march);
+			}
+
+			&.april {
+				fill: var(--april);
+			}
+
+			&.may {
+				fill: var(--may);
+			}
+
+			&.june {
+				fill: var(--june);
+			}
+
+			&.july {
+				fill: var(--july);
+			}
+
+			&.august {
+				fill: var(--august);
+			}
+
+			&.september {
+				fill: var(--september);
+			}
+
+			&.october {
+				fill: var(--october);
+			}
+
+			&.november {
+				fill: var(--november);
+			}
+
+			&.december {
+				fill: var(--december);
+			}
 		}
 	}
 
 	.past {
-		opacity: 0.1;
+		opacity: .1;
 	}
 
 	.ring {
 		&.today {
 			fill: rgb(255, 0, 0);
-			&.first{
-				&.january { fill: var(--january); }
-				&.february { fill: var(--february); }
-				&.march { fill: var(--march); }
-				&.april { fill: var(--april); }
-				&.may { fill: var(--may); }
-				&.june { fill: var(--june); }
-				&.july { fill: var(--july); }
-				&.august { fill: var(--august); }
-				&.september { fill: var(--september); }
-				&.october { fill: var(--october); }
-				&.november { fill: var(--november); }
-				&.december { fill: var(--december); }
+
+			&.first {
+				&.january {
+					fill: var(--january);
+				}
+
+				&.february {
+					fill: var(--february);
+				}
+
+				&.march {
+					fill: var(--march);
+				}
+
+				&.april {
+					fill: var(--april);
+				}
+
+				&.may {
+					fill: var(--may);
+				}
+
+				&.june {
+					fill: var(--june);
+				}
+
+				&.july {
+					fill: var(--july);
+				}
+
+				&.august {
+					fill: var(--august);
+				}
+
+				&.september {
+					fill: var(--september);
+				}
+
+				&.october {
+					fill: var(--october);
+				}
+
+				&.november {
+					fill: var(--november);
+				}
+
+				&.december {
+					fill: var(--december);
+				}
 			}
 		}
 
@@ -277,8 +360,6 @@ text {
 			fill: var(--autumn);
 		}
 	}
-
-
 }
 
 @keyframes loadingAnimation {
@@ -292,17 +373,17 @@ text {
 }
 
 #Spinner {
-
 	#LoadingIndicator {
-		stroke: #b11313;
-		stroke-dasharray: 0, 6.6;
-		stroke-width: 2px;
-		stroke-linecap: round;
-		fill: none;
-
-		animation: loadingAnimation 1.5s infinite;
 		opacity: 1;
+		fill: none;
+		stroke: #b11313;
+		stroke-width: 2px;
+
 		transition: opacity 1s;
+		animation: loadingAnimation 1.5s infinite;
+
+		stroke-dasharray: 0, 6.6;
+		stroke-linecap: round;
 	}
 
 	#LoadingIndicator.hide {
@@ -314,9 +395,11 @@ text {
 	position: absolute;
 	bottom: 20px;
 	right: 20px;
-	text-align: right;
+
+	color: white;
+
 	font-size: 20px;
 	font-weight: bold;
-	color: white;
-	text-shadow: 0 0 5px rgba(black, .5)
+	text-align: right;
+	text-shadow: 0 0 5px rgba(black, .5);
 }

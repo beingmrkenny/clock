@@ -66,33 +66,33 @@ class Clock {
 
 		this.globalVariables.setItem('tickTimer', setInterval(timer, msInterval));
 
-		qid('HourHand').style.opacity = 1;
+		qid('TimeGroup').style.opacity = 1;
 	}
 
 	stop() {
 		clearInterval(this.globalVariables.getItem('tickTimer'));
-		qid('HourHand').style.opacity = 0.5;
+		qid('TimeGroup').style.opacity = 0.5;
 	}
 
 	showTime(dateTime) {
 		const angle = Time.asClockAngle(dateTime);
-		qid('HourHand').setAttribute('transform', `rotate(${angle})`);
+		qid('TimeGroup').setAttribute('transform', `rotate(${angle})`);
 	}
 
 	showCurrentTime() {
 		this.showTime(this.now());
+		qid('Time').textContent = this.now().toString("H:i");
 	}
 
 	showCurrentDate() {
 		const actualNow = new Dative(),
-			now = new Dative(this.now()),
-			dateComplication = q('#Date');
+			now = new Dative(this.now());
 		let format = 'D j';
 
 		format += actualNow.toString('Y-m') != now.toString('Y-m') ? ' M' : '';
 		format += actualNow.getFullYear() != now.getFullYear() ? ' Y' : '';
 
-		dateComplication.textContent = now.toString(format);
+		qid('Date').textContent = now.toString(format);
 	}
 
 	// Drawing stuff
@@ -100,8 +100,8 @@ class Clock {
 	draw() {
 		this.drawHours();
 		this.drawTicks();
-		this.drawHand();
-		this.drawDate();
+		this.drawTimeHand();
+		this.drawDateHand();
 		this.drawCalendar();
 
 		qid('Disc').setAttribute('r', this.radius);
@@ -176,18 +176,41 @@ class Clock {
 		}
 	}
 
-	drawHand() {
-		this.face.appendChild(
+	drawTimeHand() {
+
+		this.showCurrentTime();
+
+		const timeGroup = qid('TimeGroup');
+		const radius = -0.89 * this.radius;
+		const rotate = this.now().format("H") <= 11 ? 90 : -90;
+
+		const time = qid('Time');
+		time.setAttribute('x', -1.4);
+		time.setAttribute('y', radius / 2);
+		time.setAttribute('transform', `rotate(${rotate}, 0, -89)`);
+
+		const box = time.getBBox();
+
+		timeGroup.prepend(
 			createElement(
-				`<line x1="0" y1="0" x2="0" y2="${
-					-0.9 * this.radius
-				}" id="HourHand" />`,
+				`<line
+					x1="0" y1="${radius / 2 - box.width / 2 - 10}"
+					x2="0" y2="${radius / 2 + box.width / 2}"
+					id="TimeMask" />`,
 				'svg'
 			)
 		);
+
+		timeGroup.prepend(
+			createElement(
+				`<line x1="0" y1="0" x2="0" y2="${radius}" id="TimeHand" />`,
+				'svg'
+			)
+		);
+
 	}
 
-	drawDate() {
+	drawDateHand() {
 
 		this.showCurrentDate();
 
@@ -197,7 +220,7 @@ class Clock {
 		const rotate = (this.now() <= summer) ? 90 : -90;
 
 		const date = qid('Date');
-		date.setAttribute('x', 0);
+		date.setAttribute('x', -1.4);
 		date.setAttribute('y', radius/2);
 		date.setAttribute('transform', `rotate(${rotate}, 0, -80)`);
 
