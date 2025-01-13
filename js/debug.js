@@ -1,4 +1,13 @@
-function placeDot() {
+function placeDot(x, y) {
+	qid('ClockSVG').appendChild(
+		createElement(
+			`<circle fill="red" r="1" cx="${x}" cy="${y}">`,
+			'svg'
+		)
+	);
+}
+
+function placeDotFancy() {
 	var cx = 0,
 		cy = 0,
 		angle,

@@ -100,8 +100,7 @@ class Clock {
 	draw() {
 		this.drawHours();
 		this.drawTicks();
-		this.drawTimeHand();
-		this.drawDateHand();
+		this.drawHands();
 		this.drawCalendar();
 
 		qid('Disc').setAttribute('r', this.radius);
@@ -176,74 +175,41 @@ class Clock {
 		}
 	}
 
-	drawTimeHand() {
+	drawHands() {
 
 		this.showCurrentTime();
-
-		const timeGroup = qid('TimeGroup');
-		const radius = -0.89 * this.radius;
-		const rotate = this.now().format("H") <= 11 ? 90 : -90;
-
-		const time = qid('Time');
-		time.setAttribute('x', -1.4);
-		time.setAttribute('y', radius / 2);
-		time.setAttribute('transform', `rotate(${rotate}, 0, -89)`);
-
-		const box = time.getBBox();
-
-		timeGroup.prepend(
-			createElement(
-				`<line
-					x1="0" y1="${radius / 2 - box.width / 2 - 10}"
-					x2="0" y2="${radius / 2 + box.width / 2}"
-					id="TimeMask" />`,
-				'svg'
-			)
-		);
-
-		timeGroup.prepend(
-			createElement(
-				`<line x1="0" y1="0" x2="0" y2="${radius}" id="TimeHand" />`,
-				'svg'
-			)
-		);
-
-	}
-
-	drawDateHand() {
-
 		this.showCurrentDate();
 
-		const dateGroup = qid('DateGroup');
-		const radius = -0.8 * this.radius;
 		const summer = new Dative(A.Get.summerSolstice(this.now().format('Y')));
-		const rotate = (this.now() <= summer) ? 90 : -90;
 
-		const date = qid('Date');
-		date.setAttribute('x', -1.4);
-		date.setAttribute('y', radius/2);
-		date.setAttribute('transform', `rotate(${rotate}, 0, -80)`);
+		['Time', 'Date'].forEach(type => {
 
-		const box = date.getBBox();
+			let proportion, rotate;
 
-		dateGroup.prepend(
-			createElement(
-				`<line
-					x1="0" y1="${radius / 2 - box.width / 2 - 10}"
-					x2="0" y2="${radius / 2 + box.width / 2}"
-					id="DateMask" />`,
-				'svg'
-			)
-		);
+			if (type == 'Time') {
+				proportion = -0.89;
+				rotate = this.now().format('H') <= 11 ? 90 : -90;
+			} else {
+				proportion = -0.8;
+				rotate = this.now() <= summer ? 90 : -90;
+			}
 
-		dateGroup.prepend(
-			createElement(
-				`<line x1="0" y1="-15" x2="0" y2="${
-					radius
-				}" id="DateHand" />`,
-				'svg'
-			)
-		);
+			const radius = proportion * this.radius;
+			const rotateY = proportion * 100;
+
+			const text = qid(type);
+			text.setAttribute('x', -3);
+			text.setAttribute('y', radius / 2);
+			text.setAttribute('transform', `rotate(${rotate}, 0, ${rotateY})`);
+
+			const box = text.getBBox();
+			const mask = qid(type + 'Mask');
+			mask.setAttribute('y1', radius / 2 - box.width / 2 - 10);
+			mask.setAttribute('y2', radius / 2 + box.width / 2);
+
+			qid(type + 'Hand').setAttribute('y2', radius);
+		});
+
 	}
 
 	drawCalendar() {

@@ -128,33 +128,21 @@ text {
 		stroke: var(--foreground-color);
 
 		stroke-linecap: round;
-	}
-
-	#DateHand {
-		stroke-width: 4;
-	}
-
-	#TimeHand {
 		stroke-width: 6;
 	}
 
-	#TimeMask {
+	#TimeMask,
+	#DateMask {
 		stroke: var(--background-color);
 		stroke-width: 8;
 	}
 
-	#DateMask {
-		stroke: var(--background-color);
-		stroke-width: 5;
-	}
-
 	#Time,
 	#Date {
-		font-size: 16px;
+		font-size: 7px;
 		font-weight: bold;
 		text-transform: uppercase;
-
-		dominant-baseline: auto;
+		dominant-baseline: text-after-edge;
 	}
 
 	.tick {
@@ -262,6 +250,10 @@ text {
 		&.autumn-equinox {
 			fill: var(--autumn);
 		}
+	}
+
+	.solar-point {
+		opacity: 1;
 	}
 }
 
