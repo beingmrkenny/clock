@@ -234,54 +234,6 @@ text {
 
 		&.first {
 			opacity: 1;
-
-			&.january {
-				fill: var(--january);
-			}
-
-			&.february {
-				fill: var(--february);
-			}
-
-			&.march {
-				fill: var(--march);
-			}
-
-			&.april {
-				fill: var(--april);
-			}
-
-			&.may {
-				fill: var(--may);
-			}
-
-			&.june {
-				fill: var(--june);
-			}
-
-			&.july {
-				fill: var(--july);
-			}
-
-			&.august {
-				fill: var(--august);
-			}
-
-			&.september {
-				fill: var(--september);
-			}
-
-			&.october {
-				fill: var(--october);
-			}
-
-			&.november {
-				fill: var(--november);
-			}
-
-			&.december {
-				fill: var(--december);
-			}
 		}
 	}
 
@@ -291,57 +243,8 @@ text {
 
 	.ring {
 		&.today {
-			fill: rgb(255, 0, 0);
-
-			&.first {
-				&.january {
-					fill: var(--january);
-				}
-
-				&.february {
-					fill: var(--february);
-				}
-
-				&.march {
-					fill: var(--march);
-				}
-
-				&.april {
-					fill: var(--april);
-				}
-
-				&.may {
-					fill: var(--may);
-				}
-
-				&.june {
-					fill: var(--june);
-				}
-
-				&.july {
-					fill: var(--july);
-				}
-
-				&.august {
-					fill: var(--august);
-				}
-
-				&.september {
-					fill: var(--september);
-				}
-
-				&.october {
-					fill: var(--october);
-				}
-
-				&.november {
-					fill: var(--november);
-				}
-
-				&.december {
-					fill: var(--december);
-				}
-			}
+			stroke: rgb(255, 0, 0);
+			stroke-width: 1;
 		}
 
 		&.summer-solstice {
