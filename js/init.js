@@ -21,7 +21,8 @@ const dateTimeDebug = false; // full date time
 
 // const dateTimeDebug = '3 august 2024 00:00'; // summer (DST)
 // const dateTimeDebug = '3 november 2024 00:00'; // winter (no DST)
-// const dateTimeDebug = '23 december 2024 00:00'; // winter (no DST)
+// const dateTimeDebug = '23 december 2024 12:00'; // winter (no DST)
+// const dateTimeDebug = '1 September 2024 19:00'; // winter (no DST)
 
 const timeDebug = false; // use today, but change the time
 // const timeDebug = "00:00:00"; // use today, but change the time
