@@ -118,7 +118,7 @@ text {
 	}
 
 	#DatePivot {
-		fill: none;
+		fill: var(--background-color);
 		stroke-width: 2;
 	}
 
@@ -126,23 +126,28 @@ text {
 	#DateHand {
 		fill: var(--foreground-color);
 		stroke: var(--foreground-color);
+		stroke-width: 6;
 
 		stroke-linecap: round;
-		stroke-width: 6;
 	}
 
 	#TimeMask,
 	#DateMask {
 		stroke: var(--background-color);
-		stroke-width: 8;
+		stroke-width: 7;
 	}
 
 	#Time,
 	#Date {
+		fill: var(--foreground-color);
+		stroke-width: 0;
+
 		font-size: 7px;
 		font-weight: bold;
 		text-transform: uppercase;
-		dominant-baseline: text-after-edge;
+
+		dominant-baseline: middle;
+		text-anchor: middle;
 	}
 
 	.tick {
@@ -150,18 +155,14 @@ text {
 		stroke-width: 0;
 	}
 
-	text {
-		fill: var(--foreground-color);
+	.hour-digit {
+		fill: white;
 		stroke-width: 0;
 
 		font-family: Helvetica;
 		font-size: 16px;
 
 		dominant-baseline: central;
-	}
-
-	.hour-digit {
-		fill: white;
 	}
 }
 

@@ -81,7 +81,7 @@ class Clock {
 
 	showCurrentTime() {
 		this.showTime(this.now());
-		qid('Time').textContent = this.now().toString("H:i");
+		qid('Time').textContent = this.now().toString('H:i');
 	}
 
 	showCurrentDate() {
@@ -176,44 +176,47 @@ class Clock {
 	}
 
 	drawHands() {
-
 		this.showCurrentTime();
 		this.showCurrentDate();
 
-		const summer = new Dative(A.Get.summerSolstice(this.now().format('Y')));
+		const now = this.now();
 
-		['Time', 'Date'].forEach(type => {
+		const summer = new Dative(A.Get.summerSolstice(now.format('Y')));
+		const winter = new Dative(A.Get.winterSolstice(now.format('Y')));
 
-			let proportion, rotate;
+		['Time', 'Date'].forEach((type) => {
+			const side =
+				type == 'Time'
+					? now.format('H') <= 11
+						? 'left'
+						: 'right'
+					: now <= summer || now >= winter
+						? 'left'
+						: 'right';
 
-			if (type == 'Time') {
-				proportion = -0.89;
-				rotate = this.now().format('H') <= 11 ? 90 : -90;
-			} else {
-				proportion = -0.8;
-				rotate = this.now() <= summer ? 90 : -90;
-			}
+			const proportion = type == 'Time' ? -0.89 : -0.8,
+				radius = proportion * this.radius,
+				x = side == 'left' ? -0.4 : 0.4, // x is clockwise/anti-clockwise on the hand
+				y = radius / 2, // y is from center to perimeter
+				angle = side == 'left' ? 90 : -90;
 
-			const radius = proportion * this.radius;
-			const rotateY = proportion * 100;
+				// placeDot(x, 10, qid(type + 'Group'));
 
 			const text = qid(type);
-			text.setAttribute('x', -3);
-			text.setAttribute('y', radius / 2);
-			text.setAttribute('transform', `rotate(${rotate}, 0, ${rotateY})`);
+			text.setAttribute('x', x);
+			text.setAttribute('y', y);
+			text.setAttribute('transform', `rotate(${angle}, ${x}, ${y})`);
 
-			const box = text.getBBox();
-			const mask = qid(type + 'Mask');
-			mask.setAttribute('y1', radius / 2 - box.width / 2 - 10);
-			mask.setAttribute('y2', radius / 2 + box.width / 2);
+			const mask = qid(type + 'Mask'),
+				halfWidth = text.getBBox().width / 2;
+			mask.setAttribute('y1', y - halfWidth);
+			mask.setAttribute('y2', y + halfWidth);
 
 			qid(type + 'Hand').setAttribute('y2', radius);
 		});
-
 	}
 
 	drawCalendar() {
-
 		const radius = 0.86 * this.radius,
 			year = this.now().format('Y'),
 			numberOfDays = year % 4 == 0 ? 366 : 365,
@@ -229,13 +232,12 @@ class Clock {
 
 		let currentDay = new Dative(winterSolstice);
 		for (let i = 1; i <= numberOfDays; i++) {
-
-			const angle = (180 - anglePerDay) + i * anglePerDay,
+			const angle = 180 - anglePerDay + i * anglePerDay,
 				c = polarToRect(radius, angle),
 				classList = [],
 				currentDate = currentDay.format('Y-m-d');
 
-			let dotR = .5,
+			let dotR = 0.5,
 				ringR = 2,
 				ring = false;
 
