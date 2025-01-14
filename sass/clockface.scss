@@ -131,12 +131,6 @@ text {
 		stroke-linecap: round;
 	}
 
-	#TimeMask,
-	#DateMask {
-		stroke: var(--background-color);
-		stroke-width: 7;
-	}
-
 	#Time,
 	#Date {
 		fill: var(--foreground-color);
@@ -147,7 +141,13 @@ text {
 		text-transform: uppercase;
 
 		dominant-baseline: middle;
-		text-anchor: middle;
+		&.left {
+			text-anchor: start;
+		}
+		&.right {
+			text-anchor: end;
+		}
+
 	}
 
 	.tick {

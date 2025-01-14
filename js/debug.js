@@ -1,7 +1,7 @@
-function placeDot(x, y, parentElement = qid('ClockSVG')) {
+function placeDot(x, y, parentElement = qid('ClockSVG'), color = 'red') {
 	parentElement.appendChild(
 		createElement(
-			`<circle fill="red" r="1" cx="${x}" cy="${y}">`,
+			`<circle fill="${color}" r="1" cx="${x}" cy="${y}">`,
 			'svg'
 		)
 	);

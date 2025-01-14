@@ -196,21 +196,15 @@ class Clock {
 
 			const proportion = type == 'Time' ? -0.89 : -0.8,
 				radius = proportion * this.radius,
+				angle = side == 'left' ? 90 : -90,
 				x = side == 'left' ? -0.4 : 0.4, // x is clockwise/anti-clockwise on the hand
-				y = radius / 2, // y is from center to perimeter
-				angle = side == 'left' ? 90 : -90;
-
-				// placeDot(x, 10, qid(type + 'Group'));
+				y = 17; // y is from center to perimeter
 
 			const text = qid(type);
 			text.setAttribute('x', x);
 			text.setAttribute('y', y);
 			text.setAttribute('transform', `rotate(${angle}, ${x}, ${y})`);
-
-			const mask = qid(type + 'Mask'),
-				halfWidth = text.getBBox().width / 2;
-			mask.setAttribute('y1', y - halfWidth);
-			mask.setAttribute('y2', y + halfWidth);
+			text.classList.add(side);
 
 			qid(type + 'Hand').setAttribute('y2', radius);
 		});
