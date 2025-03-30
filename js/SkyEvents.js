@@ -195,7 +195,14 @@ class SkyEvents {
 		end = new Dative().setTimeComponent(new Dative(end).toString('H:i:s.u'));
 
 		if (start > end) {
+			// NOTE the offset malarkey here fixed the gap that appearted on DST days
+			let offset = start.getTimezoneOffset();
 			start = start.addDays(-1);
+			if (offset != 0) {
+				start = new Date(
+					start.getTime() + offset * 60 * 1000
+				);
+			}
 		}
 
 		const radius = closePath ? 400 : 1.3 * new Clock().radius,
@@ -262,6 +269,7 @@ class SkyEvents {
 			const phase = phases[phaseName];
 			const element = qid(phase.id);
 			const path = SkyEvents.getSegmentPath(phase.start, phase.end);
+
 			if (element) {
 				element.setAttribute('d', path);
 			} else {

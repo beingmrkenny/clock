@@ -7,32 +7,17 @@ function placeDot(x, y, parentElement = qid('ClockSVG'), color = 'red') {
 	);
 }
 
-function placeDotFancy() {
+function placeDotFancy(options) {
 	var cx = 0,
 		cy = 0,
-		angle,
-		parentElement = qid('ClockSVG'),
-		color = 'red',
-		day;
-
-	for (let arg of arguments) {
-		if (
-			arg.__proto__.constructor.name == 'Date' ||
-			arg.__proto__.constructor.name == 'Dative'
-		) {
-			angle = Time.asClockAngle(arg);
-			day = new Dative(arg).toString('d');
-		}
-		if (arg instanceof SVGElement) {
-			parentElement = arg;
-		}
-		if (typeof arg == 'string') {
-			color = arg;
-		}
-	}
+		angle = Time.asClockAngle(options.time),
+		parentElement = options.parent || qid('ClockSVG'),
+		color = options.color || 'red',
+		label = options.label || new Dative(options.time).toString('d'),
+		position = options.position;
 
 	if (angle) {
-		let coords = polarToRect(1.1 * new Clock().radius, angle);
+		let coords = polarToRect(position * new Clock().radius, angle);
 		cx = coords.x;
 		cy = coords.y;
 
@@ -43,11 +28,10 @@ function placeDotFancy() {
 			)
 		);
 
-		if (day) {
-			let coords = polarToRect(1.3 * new Clock().radius, angle);
+		if (label) {
 			parentElement.appendChild(
 				createElement(
-					`<text fill="${color}" x="${coords.x}" y="${coords.y}">${day}</text>`,
+					`<text fill="${color}" x="${coords.x}" y="${coords.y}" font-size="8px">${label}</text>`,
 					'svg'
 				)
 			);
