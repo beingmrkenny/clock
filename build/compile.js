@@ -30,7 +30,7 @@ exports.compileJS = () => {
         const sourcemap = JSON.parse(fs.readFileSync('serve/clock.js.map'));
         sourcemap.sources.forEach((item, i) => sourcemap.sources[i] = `../${item}`);
         fs.writeFileSync('serve/clock.js.map', JSON.stringify(sourcemap));
-        exec('say sh');
+        // exec('say sh');
     });
 
 }
