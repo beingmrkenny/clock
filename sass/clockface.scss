@@ -143,10 +143,10 @@ text {
 
 		dominant-baseline: middle;
 		&.left {
-			text-anchor: start;
+			text-anchor: end;
 		}
 		&.right {
-			text-anchor: end;
+			text-anchor: start;
 		}
 
 	}

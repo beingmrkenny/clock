@@ -204,12 +204,10 @@ class Clock {
 		const summer = new Dative(A.Get.summerSolstice(now.format('Y')));
 		const winter = new Dative(A.Get.winterSolstice(now.format('Y')));
 
-		const proportion = -0.8,
-			radius = proportion * this.radius,
-			side = now <= summer || now >= winter ? 'left' : 'right',
+		const side = now <= summer || now >= winter ? 'left' : 'right',
 			angle = side == 'left' ? 90 : -90,
 			x = side == 'left' ? -0.4 : 0.4, // x is cw/anti-cw on the hand
-			y = 17; // y is from center to perimeter
+			y = -0.7 * this.radius; // y is from center to perimeter
 
 		const text = qid('Date');
 			text.setAttribute('x', x);
@@ -217,7 +215,7 @@ class Clock {
 			text.setAttribute('transform', `rotate(${angle}, ${x}, ${y})`);
 			text.classList.add(side);
 
-		qid('TimeHand').setAttribute('y2', radius);
+		qid('TimeHand').setAttribute('y2', -0.8 * this.radius);
 
 	}
 
