@@ -78,7 +78,6 @@ class Clock {
 
 	showCurrentTime() {
 		this.showTime(this.now());
-		qid('Time').textContent = this.now().toString('H:i');
 	}
 
 	showCurrentDate() {
@@ -205,30 +204,21 @@ class Clock {
 		const summer = new Dative(A.Get.summerSolstice(now.format('Y')));
 		const winter = new Dative(A.Get.winterSolstice(now.format('Y')));
 
-		['Time', 'Date'].forEach((type) => {
-			const side =
-				type == 'Time'
-					? now.format('H') <= 11
-						? 'left'
-						: 'right'
-					: now <= summer || now >= winter
-					? 'left'
-					: 'right';
+		const proportion = -0.8,
+			radius = proportion * this.radius,
+			side = now <= summer || now >= winter ? 'left' : 'right',
+			angle = side == 'left' ? 90 : -90,
+			x = side == 'left' ? -0.4 : 0.4, // x is cw/anti-cw on the hand
+			y = 17; // y is from center to perimeter
 
-			const proportion = type == 'Time' ? -0.89 : -0.8,
-				radius = proportion * this.radius,
-				angle = side == 'left' ? 90 : -90,
-				x = side == 'left' ? -0.4 : 0.4, // x is clockwise/anti-clockwise on the hand
-				y = 17; // y is from center to perimeter
-
-			const text = qid(type);
+		const text = qid('Date');
 			text.setAttribute('x', x);
 			text.setAttribute('y', y);
 			text.setAttribute('transform', `rotate(${angle}, ${x}, ${y})`);
 			text.classList.add(side);
 
-			qid(type + 'Hand').setAttribute('y2', radius);
-		});
+		qid('TimeHand').setAttribute('y2', radius);
+
 	}
 
 	drawCalendar() {
