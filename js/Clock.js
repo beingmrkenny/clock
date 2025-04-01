@@ -115,17 +115,20 @@ class Clock {
 	}
 
 	static setAdditionalRotation(angle) {
-		const rotation = parseFloat(
-			getComputedStyle(q(':root')).getPropertyValue('--rotation')
+		const daylightHoursRotation = parseFloat(
+			getComputedStyle(q(':root')).getPropertyValue('--daylightHoursRotation')
+		);
+		const faceRotation = parseFloat(
+			getComputedStyle(q(':root')).getPropertyValue('--faceRotation')
 		);
 		angle = angle - 360;
 		q(':root').style.setProperty(
 			'--faceRotation',
-			0 - rotation - angle + 'deg'
+			faceRotation - angle + 'deg'
 		);
 		q(':root').style.setProperty(
 			'--daylightHoursRotation',
-			rotation - angle + 'deg'
+			daylightHoursRotation - angle + 'deg'
 		);
 	}
 
