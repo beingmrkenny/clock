@@ -104,13 +104,14 @@ text {
 	stroke: var(--foreground-color);
 
 	user-select: none;
-	transition: transform .5s cubic-bezier(.83, 0, .17, 1);
-
-	transform: rotate( var(--faceRotation) );
 
 	#Disc {
 		fill: var(--background-color);
 		stroke: none;
+	}
+
+	#HoursAndTicks {
+		transform: rotate(var(--faceRotation));
 	}
 
 	#TimePivot {

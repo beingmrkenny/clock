@@ -72,7 +72,11 @@ class Clock {
 	}
 
 	showTime(dateTime) {
-		const angle = Time.asClockAngle(dateTime);
+		let angle = Time.asClockAngle(dateTime);
+		let additionalRotation = this.globalVariables.getItem('additionalRotation');
+		if (additionalRotation) {
+			angle = angle - additionalRotation;
+		}
 		qid('TimeGroup').setAttribute('transform', `rotate(${angle})`);
 	}
 
@@ -114,6 +118,8 @@ class Clock {
 	}
 
 	static setAdditionalRotation(angle) {
+		const globalVariables = new GlobalVariables('CLOCK');
+		globalVariables.setItem('additionalRotation', angle);
 		const daylightHoursRotation = parseFloat(
 			getComputedStyle(q(':root')).getPropertyValue('--daylightHoursRotation')
 		);
@@ -215,7 +221,7 @@ class Clock {
 			text.setAttribute('transform', `rotate(${angle}, ${x}, ${y})`);
 			text.classList.add(side);
 
-		qid('TimeHand').setAttribute('y2', -0.8 * this.radius);
+		qid('TimeHand').setAttribute('y2', -0.9 * this.radius);
 
 	}
 
