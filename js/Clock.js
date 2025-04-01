@@ -44,11 +44,7 @@ class Clock {
 			SkyEvents.placeMoon();
 			SkyEvents.drawMoonlightArc();
 
-			const isDST =
-				this.now().isDST() ||
-				this.now().getTimezoneOffsetDifferenceBetweenAMAndPM() != 0;
-			qid('Face').classList.toggle('dst-rotated', isDST);
-			qid('DaylightHours').classList.toggle('dst-rotated', isDST);
+			this.setRotation();
 		}
 
 		// what is this plops?
@@ -103,13 +99,34 @@ class Clock {
 		this.drawTicks();
 		this.drawHands();
 		this.drawCalendar();
-
 		qid('Disc').setAttribute('r', this.radius);
+		this.setRotation();
+	}
+
+	setRotation() {
 		const isDST =
 			this.now().isDST() ||
 			this.now().getTimezoneOffsetDifferenceBetweenAMAndPM() != 0;
-		qid('Face').classList.toggle('dst-rotated', isDST);
-		qid('DaylightHours').classList.toggle('dst-rotated', isDST);
+		q(':root').style.setProperty('--faceRotation', isDST ? '-15deg' : 0);
+		q(':root').style.setProperty(
+			'--daylightHoursRotation',
+			isDST ? '15deg' : 0
+		);
+	}
+
+	static setAdditionalRotation(angle) {
+		const rotation = parseFloat(
+			getComputedStyle(q(':root')).getPropertyValue('--rotation')
+		);
+		angle = angle - 360;
+		q(':root').style.setProperty(
+			'--faceRotation',
+			0 - rotation - angle + 'deg'
+		);
+		q(':root').style.setProperty(
+			'--daylightHoursRotation',
+			rotation - angle + 'deg'
+		);
 	}
 
 	drawHours() {

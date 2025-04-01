@@ -30,9 +30,7 @@
 
 #DaylightHours {
 
-	&.dst-rotated {
-		transform: rotate(15deg);
-	}
+	transform: rotate(var(--daylightHoursRotation));
 
 	path {
 		transition: opacity 250ms;
@@ -108,9 +106,7 @@ text {
 	user-select: none;
 	transition: transform .5s cubic-bezier(.83, 0, .17, 1);
 
-	&.dst-rotated {
-		transform: rotate(-15deg);
-	}
+	transform: rotate( var(--faceRotation) );
 
 	#Disc {
 		fill: var(--background-color);
