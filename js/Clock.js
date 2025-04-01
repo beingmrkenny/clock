@@ -43,11 +43,12 @@ class Clock {
 			SkyEvents.drawDaylightHours();
 			SkyEvents.placeMoon();
 			SkyEvents.drawMoonlightArc();
-			qid('Face').classList.toggle(
-				'dst-rotated',
+
+			const isDST =
 				this.now().isDST() ||
-					this.now().getTimezoneOffsetDifferenceBetweenAMAndPM() != 0
-			);
+				this.now().getTimezoneOffsetDifferenceBetweenAMAndPM() != 0;
+			qid('Face').classList.toggle('dst-rotated', isDST);
+			qid('DaylightHours').classList.toggle('dst-rotated', isDST);
 		}
 
 		// what is this plops?
@@ -104,11 +105,11 @@ class Clock {
 		this.drawCalendar();
 
 		qid('Disc').setAttribute('r', this.radius);
-		qid('Face').classList.toggle(
-			'dst-rotated',
+		const isDST =
 			this.now().isDST() ||
-				this.now().getTimezoneOffsetDifferenceBetweenAMAndPM() != 0
-		);
+			this.now().getTimezoneOffsetDifferenceBetweenAMAndPM() != 0;
+		qid('Face').classList.toggle('dst-rotated', isDST);
+		qid('DaylightHours').classList.toggle('dst-rotated', isDST);
 	}
 
 	drawHours() {
@@ -191,8 +192,8 @@ class Clock {
 						? 'left'
 						: 'right'
 					: now <= summer || now >= winter
-						? 'left'
-						: 'right';
+					? 'left'
+					: 'right';
 
 			const proportion = type == 'Time' ? -0.89 : -0.8,
 				radius = proportion * this.radius,

@@ -195,13 +195,12 @@ class SkyEvents {
 		end = new Dative().setTimeComponent(new Dative(end).toString('H:i:s.u'));
 
 		if (start > end) {
-			// NOTE the offset malarkey here fixed the gap that appearted on DST days
-			let offset = start.getTimezoneOffset();
+			// NOTE the offset malarkey here fixed the gap that appeared on DST days
+			const originalOffset = start.getTimezoneOffset();
 			start = start.addDays(-1);
-			if (offset != 0) {
-				start = new Date(
-					start.getTime() + offset * 60 * 1000
-				);
+			const adjustedOffset = start.getTimezoneOffset();
+			if (originalOffset != adjustedOffset) {
+				start = new Date(start.getTime() + originalOffset * 60 * 1000);
 			}
 		}
 

@@ -29,6 +29,11 @@
 }
 
 #DaylightHours {
+
+	&.dst-rotated {
+		transform: rotate(15deg);
+	}
+
 	path {
 		transition: opacity 250ms;
 	}
